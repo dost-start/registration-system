@@ -1,6 +1,24 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { orbitron, montserrat, roboto, robotoMono } from "../lib/fonts";
+const garetBook = localFont({
+  src: "../assets/Garet-Book.otf",
+  variable: "--font-garet-book",
+  display: "swap",
+});
+
+const kagitinganBold = localFont({
+  src: "../assets/Kagitingan-Bold.otf",
+  variable: "--font-kagitingan-bold",
+  display: "swap",
+});
+
+const monument = localFont({
+  src: "../assets/Monument.otf",
+  variable: "--font-monument",
+  display: "swap",
+});
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +45,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${montserrat.variable} ${roboto.variable} ${robotoMono.variable} antialiased`}
+        className={`
+          ${geistSans.variable} ${geistMono.variable}
+          ${orbitron.variable} ${montserrat.variable} ${roboto.variable} ${robotoMono.variable}
+          ${garetBook.variable} ${kagitinganBold.variable} ${monument.variable}
+          antialiased
+        `}
       >
         {children}
       </body>
