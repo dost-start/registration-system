@@ -11,7 +11,10 @@ const config = {
     extend: {
       fontFamily: {
         garet: ["var(--font-garet-book)", ...defaultTheme.fontFamily.sans],
-        kagitingan: ["var(--font-kagitingan-bold)", ...defaultTheme.fontFamily.sans],
+        kagitingan: [
+          "var(--font-kagitingan-bold)",
+          ...defaultTheme.fontFamily.sans,
+        ],
         monument: ["var(--font-monument)", ...defaultTheme.fontFamily.sans],
       },
     },
