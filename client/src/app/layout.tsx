@@ -1,23 +1,22 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { orbitron, montserrat, roboto, robotoMono } from "../lib/fonts";
+import localFont from "next/font/local";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const garetBook = localFont({
+  src: "../assets/Garet-Book.otf",
+  variable: "--font-garet-book",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const kagitinganBold = localFont({
+  src: "../assets/Kagitingan-Bold.otf",
+  variable: "--font-kagitingan-bold",
+  display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "START Registration System",
-  description:
-    "Registration system for Scholars Transformed Advancement and Research for Technology",
-};
+const monument = localFont({
+  src: "../assets/Monument.otf",
+  variable: "--font-monument",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -27,7 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${montserrat.variable} ${roboto.variable} ${robotoMono.variable} antialiased`}
+        className={`
+          ${garetBook.variable} ${kagitinganBold.variable} ${monument.variable} ${garetBook.className}
+          antialiased
+        `}
       >
         {children}
       </body>

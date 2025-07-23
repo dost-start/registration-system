@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { orbitron } from "../lib/fonts";
 
 export default function Home() {
   return (
@@ -15,7 +14,7 @@ export default function Home() {
         />
 
         <h1
-          className={`${orbitron.variable} font-orbitron text-4xl sm:text-6xl md:text-7xl font-extrabold bg-clip-text bg-gradient-to-r text-primary tracking-wide animate-pulse`}
+          className={` text-4xl sm:text-6xl md:text-7xl font-extrabold bg-clip-text bg-gradient-to-r text-primary tracking-wide animate-pulse`}
         >
           Starting soon...
         </h1>
