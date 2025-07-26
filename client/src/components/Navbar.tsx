@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-export default function Navbar() {
+interface NavbarProps {
+  onRegisterClick?: () => void;
+}
+
+export default function Navbar({ onRegisterClick }: NavbarProps) {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-sm shadow-sm opacity-90">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +24,10 @@ export default function Navbar() {
 
           {/* Register Now button on the right */}
           <div>
-            <Button className="font-semibold px-6 py-2 transform hover:shadow-xl">
+            <Button 
+              onClick={onRegisterClick}
+              className="font-semibold px-6 py-2 transform hover:shadow-xl"
+            >
               Register Now
             </Button>
           </div>
