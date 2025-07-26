@@ -18,8 +18,10 @@ export const registrationSchema = yup.object({
   suffix: yup.string().optional().default(""),
   contactNumber: yup
     .string()
-    .matches(/^[0-9+\-\s()]+$/, "Please enter a valid contact number")
-    .min(10, "Contact number must be at least 10 digits")
+    .matches(
+      /^09\d{9}$/,
+      "Please enter a valid contact number starting with 09 (e.g., 09XXXXXXXXX)"
+    )
     .required("Contact number is required"),
   facebookProfile: yup
     .string()
