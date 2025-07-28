@@ -36,8 +36,9 @@ export const registrationSchema = z.object({
     .string()
     .min(2, "Course name must be at least 2 characters")
     .min(1, "Course is required"),
-  dostScholar: z.boolean().default(false),
-  dostStartMember: z.boolean().default(false),
+  // not sure if this needs to be required
+  dostScholar: z.boolean(),
+  dostStartMember: z.boolean(),
 });
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;
