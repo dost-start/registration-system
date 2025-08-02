@@ -1,12 +1,25 @@
+"use client";
+
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import RegistrationForm from "@/components/registration-form/RegistrationForm";
 
 export default function Home() {
+  const scrollToRegistration = () => {
+    const element = document.getElementById('registration-form');
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+  
   return (
     <div className="relative">
       {/* Navbar */}
-      <Navbar />
+      <Navbar onRegisterClick={scrollToRegistration} />
       
       {/* Banner Background Section */}
       <div className="relative h-64 sm:h-80 md:h-96 lg:h-140">
@@ -48,6 +61,7 @@ export default function Home() {
             <Button 
             variant="default"
             size = "lg"
+            onClick={scrollToRegistration}
             className="font-semibold px-6 py-2 transform hover:shadow-xl">
               <p className="text-white">Register Now</p>
             </Button>
@@ -61,6 +75,9 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Registration Form Section */}
+      <RegistrationForm />
     </div>
   );
 }
