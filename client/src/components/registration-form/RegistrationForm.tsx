@@ -26,14 +26,24 @@ import {
   type RegistrationFormData,
 } from "@/components/registration-form/registrationSchema";
 import { submitRegistration } from "@/app/actions/registration";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+
+type FormErrors = z.inferFormattedError<typeof registrationSchema>;
+type SubmitMessageType = {
+  success: boolean;
+  message: string;
+  errors?: FormErrors | null;
+  redirectUrl?: string;
+};
 
 export default function RegistrationForm() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
+  const [submitMessage, setSubmitMessage] = useState<SubmitMessageType | null>(
+    null
+  );
 
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema),
@@ -51,7 +61,20 @@ export default function RegistrationForm() {
       dostScholar: false,
       dostStartMember: false,
     },
+    mode: "onBlur",
   });
+
+  const formErrors = form.formState.errors;
+  const hasFormErrors = Object.keys(formErrors).length > 0;
+
+  useEffect(() => {
+    if (hasFormErrors) {
+      const errorSummary = document.getElementById("error-summary");
+      if (errorSummary) {
+        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [hasFormErrors]);
 
   const onSubmit = async (data: RegistrationFormData) => {
     setIsSubmitting(true);
@@ -63,14 +86,52 @@ export default function RegistrationForm() {
 
       if (result.success) {
         form.reset();
+        if (result.redirectUrl) {
+          setTimeout(() => {
+            router.push(result.redirectUrl as string);
+          }, 1500);
+        }
+      } else if (result.errors) {
+        Object.entries(result.errors).forEach(([field, error]) => {
+          if (
+            field !== "formErrors" &&
+            error &&
+            typeof error === "object" &&
+            "_errors" in error &&
+            Array.isArray(error._errors) &&
+            error._errors.length > 0
+          ) {
+            form.setError(field as any, {
+              type: "server",
+              message: error._errors[0],
+            });
+          } else if (Array.isArray(error) && error.length > 0) {
+            form.setError(field as any, {
+              type: "server",
+              message: error[0],
+            });
+          }
+        });
+        const errorElement = document.querySelector(".text-destructive");
+        if (errorElement) {
+          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          const errorSummary = document.getElementById("error-summary");
+          if (errorSummary) {
+            errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
       }
     } catch (error) {
-      // for debugging (remove in production)
-      console.error("Form submission error:", error);
       setSubmitMessage({
         success: false,
-        message: "An unexpected error occurred. Please try again.",
+        message: "An unexpected error occurred. Please try again later.",
       });
+
+      const errorSummary = document.getElementById("error-summary");
+      if (errorSummary) {
+        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     } finally {
       setIsSubmitting(false);
     }

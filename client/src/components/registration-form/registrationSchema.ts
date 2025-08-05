@@ -5,14 +5,8 @@ export const registrationSchema = z.object({
     .string()
     .email("Please enter a valid email address")
     .min(1, "Email is required"),
-  firstName: z
-    .string()
-    .min(2, "First name must be at least 2 characters")
-    .min(1, "First name is required"),
-  lastName: z
-    .string()
-    .min(2, "Last name must be at least 2 characters")
-    .min(1, "Last name is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   middleName: z.string().optional(),
   suffix: z.string().optional(),
   contactNumber: z
@@ -28,14 +22,8 @@ export const registrationSchema = z.object({
     .optional()
     .or(z.literal("")),
   region: z.string().min(1, "Please select your region"),
-  university: z
-    .string()
-    .min(2, "University name must be at least 2 characters")
-    .min(1, "University is required"),
-  course: z
-    .string()
-    .min(2, "Course name must be at least 2 characters")
-    .min(1, "Course is required"),
+  university: z.string().min(1, "University is required"),
+  course: z.string().min(1, "Course is required"),
   // not sure if this needs to be required
   dostScholar: z.boolean(),
   dostStartMember: z.boolean(),
