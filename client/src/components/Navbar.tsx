@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 interface NavbarProps {
@@ -24,12 +25,11 @@ export default function Navbar({ onRegisterClick }: NavbarProps) {
 
           {/* Register Now button on the right */}
           <div>
-            <Button 
-              onClick={onRegisterClick}
-              className="font-semibold px-6 py-2 transform hover:shadow-xl"
-            >
-              Register Now
-            </Button>
+            <Link href="#registration-form">
+              <Button className="font-semibold px-6 py-2 transform hover:shadow-xl">
+                Register Now
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
