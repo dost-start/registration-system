@@ -37,6 +37,7 @@ type SubmitMessageType = {
   errors?: FormErrors | null;
   redirectUrl?: string;
 };
+type FormFieldName = keyof RegistrationFormData;
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -101,12 +102,12 @@ export default function RegistrationForm() {
             Array.isArray(error._errors) &&
             error._errors.length > 0
           ) {
-            form.setError(field as any, {
+            form.setError(field as FormFieldName, {
               type: "server",
               message: error._errors[0],
             });
           } else if (Array.isArray(error) && error.length > 0) {
-            form.setError(field as any, {
+            form.setError(field as FormFieldName, {
               type: "server",
               message: error[0],
             });
@@ -122,7 +123,7 @@ export default function RegistrationForm() {
           }
         }
       }
-    } catch (error) {
+    } catch {
       setSubmitMessage({
         success: false,
         message: "An unexpected error occurred. Please try again later.",

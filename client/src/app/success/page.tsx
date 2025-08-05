@@ -1,3 +1,17 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Registration Successful",
+  description:
+    "Your registration has been successfully completed. We will contact you soon.",
+  openGraph: {
+    title: "Registration Successful",
+    description:
+      "Your registration has been successfully completed. We will contact you soon.",
+    type: "website",
+  },
+};
+
 export default function SuccessPage() {
   return (
     <div>
