@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import { orbitron } from "@/lib/fonts";
+import * as Form from "@/components/ui/form";
+import { z } from 'zod';
 import { createClient } from "@supabase/supabase-js";
 import { FormEvent, useState } from "react";
+import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 
@@ -14,13 +18,20 @@ export default function Login() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const router = useRouter();
+  const formSchema = z.object({
+    email: z.email(),
+    password: z.string()
+  });
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema)
+  })
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
+        email: data.email,
+        password: data.password
       })
       if (error) {
         throw new Error(error.message);
@@ -52,16 +63,29 @@ export default function Login() {
             className="mb-12 drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
           />
         </div>
-        <form className="flex flex-col space-y-8" onSubmit={handleSubmit}>
-          <div className="flex flex-col space-y-4">
-            <label>Email</label>
-            <input type="email" value={email} placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+        <Form.Form {...form}>
+          <form className="flex flex-col space-y-8" onSubmit={onSubmit}>
+            <Form.FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <Form.FormItem>
+                  <Form.FormLabel>Email</Form.FormLabel>
+                  <Form.FormControl>
+                    <Input type="email" value={email} placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+                  </Form.FormControl>
+                </Form.FormItem>
+              ))}
+            />
+            <div className="flex flex-col space-y-4">
+              <label>Email</label>
 
-            <label>Password</label>
-            <input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <button className="w-1/2 bg-primary rounded-md" type="submit"> Submit </button>
-        </form>
+              <label>Password</label>
+              <input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <button className="w-1/2 bg-primary rounded-md" type="submit"> Submit </button>
+          </form>
+        </Form.Form>
       </div>
     </div >
   );
