@@ -72,7 +72,7 @@ export default function Login() {
                 <Form.FormItem>
                   <Form.FormLabel>Email</Form.FormLabel>
                   <Form.FormControl>
-                    <Input type="email" value={email} placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+                    <Input  {...field}/>
                   </Form.FormControl>
                 </Form.FormItem>
               ))}
