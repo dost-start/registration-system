@@ -1,28 +1,83 @@
+"use client";
+
 import Image from "next/image";
+import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
+import RegistrationForm from "@/components/registration-form/RegistrationForm";
 
 export default function Home() {
+  const scrollToRegistration = () => {
+    const element = document.getElementById('registration-form');
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+  
   return (
-    <div className="grid place-items-center min-h-screen bg-white">
-      <main className="flex flex-col items-center justify-center text-center px-4">
+    <div className="relative">
+      {/* Navbar */}
+      <Navbar onRegisterClick={scrollToRegistration} />
+      
+      {/* Banner Background Section */}
+      <div className="relative h-64 sm:h-80 md:h-96 lg:h-140">
         <Image
-          src="/logo.png"
-          alt="START Logo"
-          width={200}
-          height={130}
+          src="https://res.cloudinary.com/dsz9ok0yq/image/upload/v1751719220/SUMMIT_cbyrru.png"
+          alt="National Technovation Summit"
+          fill
           priority
-          className="mb-12 drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
+          className="object-cover object-center"
         />
+      </div>
 
-        <h1
-          className={` text-4xl sm:text-6xl md:text-7xl font-extrabold bg-clip-text bg-gradient-to-r text-primary tracking-wide animate-pulse`}
-        >
-          Starting soon...
-        </h1>
+      {/* Main Content Below Banner */}
+      <main className="bg-summit-white py-4 px-4">
+        <div className="max-w-3xl p-5 m-5 mx-auto text-justify">
+          <h3 className="text-3xl sm:text-4xl font-bold text-summit-black mb-8">
+            Join the Ultimate Innovation Challenge
+          </h3>
+          
+          <p className="text-lg sm:text-xl text-summit-black mb-8 max-w-2xl mx-auto">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+            ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+            in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur 
+            sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
+            mollit anim id est laborum.
+          </p>
+          
+          <p className="text-lg sm:text-xl text-summit-black mb-12 max-w-2xl mx-auto">
+            Sed ut perspiciatis unde omnis iste natus error sit 
+            voluptatem accusantium doloremque laudantium, totam rem aperiam, 
+            eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae 
+            vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit 
+            aspernatur aut odit aut fugit.
+          </p>
 
-        <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-xl">
-          Preparing your experience. Please stand by.
-        </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+            variant="default"
+            size = "lg"
+            onClick={scrollToRegistration}
+            className="font-semibold px-6 py-2 transform hover:shadow-xl">
+              <p className="text-white">Register Now</p>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="font-semibold px-8 py-3"
+            >
+              Learn More
+            </Button>
+          </div>
+        </div>
       </main>
+
+      {/* Registration Form Section */}
+      <RegistrationForm />
     </div>
   );
 }

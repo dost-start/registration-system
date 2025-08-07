@@ -100,6 +100,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Custom Summit Theme Colors */
+  --summit-white: #FFFFFF;
+  --summit-black: #393939;
+  --summit-light-gray: #FBF8EF;
+  --summit-blue: #4D69EE;
+  --summit-teal: #18D9CE;
+  --summit-pink: #FC4C7A;
+  --summit-orange: #FEA621;
+  --summit-purple: #F7B9EA;
+  --summit-dark-gray: #0F110E;
+  --summit-navy: #202E4E;
 }
 
 .start-dropshadow {
