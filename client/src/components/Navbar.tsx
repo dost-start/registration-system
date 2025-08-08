@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Search, UserPlus } from "lucide-react";
+import { CircleCheckBig, UserPlus } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -24,7 +24,7 @@ export default function Navbar() {
                 <span className="hidden sm:inline">
                   Check Registration Status
                 </span>
-                <Search className="inline sm:hidden w-5 h-5 text-summit-blue" />
+                <CircleCheckBig className="inline sm:hidden w-5 h-5 text-summit-blue" />
               </Button>
             </Link>
             <Link href="#registration-form">
