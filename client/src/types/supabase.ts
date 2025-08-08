@@ -72,7 +72,7 @@ export type Database = {
           is_start_member?: boolean
           last_name?: string
           middle_name?: string | null
-          region: Database["public"]["Enums"]["philippine_region"]
+          region?: Database["public"]["Enums"]["philippine_region"]
           remarks?: string | null
           status: Database["public"]["Enums"]["status"]
           suffix?: string | null
@@ -108,24 +108,24 @@ export type Database = {
     }
     Enums: {
       philippine_region:
-        | "Region I - Ilocos Region"
-        | "Region II - Cagayan Valley"
-        | "Region III - Central Luzon"
-        | "Region IV-A - CALABARZON"
-        | "MIMAROPA Region"
-        | "Region V - Bicol Region"
-        | "Region VI - Western Visayas"
-        | "Region VII - Central Visayas"
-        | "Region VIII - Eastern Visayas"
-        | "Region IX - Zamboanga Peninsula"
-        | "Region X - Northern Mindanao"
-        | "Region XI - Davao Region"
-        | "Region XII - SOCCSKSARGEN"
-        | "Region XIII - Caraga"
-        | "NCR - National Capital Region"
-        | "CAR - Cordillera Administrative Region"
-        | "BARMM - Bangsamoro Autonomous Region in Muslim Mindanao"
-        | "NIR - Negros Island Region"
+        | "Region I"
+        | "Region II"
+        | "Region III"
+        | "Region IV-A"
+        | "Region IV-B"
+        | "Region V"
+        | "Region VI"
+        | "Region VII"
+        | "Region VIII"
+        | "Region IX"
+        | "Region X"
+        | "Region XI"
+        | "Region XII"
+        | "Region XIII"
+        | "NCR"
+        | "CAR"
+        | "BARMM"
+        | "NIR"
       status: "pending" | "rejected" | "accepted"
     }
     CompositeTypes: {
@@ -258,24 +258,24 @@ export const Constants = {
   public: {
     Enums: {
       philippine_region: [
-        "Region I - Ilocos Region",
-        "Region II - Cagayan Valley",
-        "Region III - Central Luzon",
-        "Region IV-A - CALABARZON",
-        "MIMAROPA Region",
-        "Region V - Bicol Region",
-        "Region VI - Western Visayas",
-        "Region VII - Central Visayas",
-        "Region VIII - Eastern Visayas",
-        "Region IX - Zamboanga Peninsula",
-        "Region X - Northern Mindanao",
-        "Region XI - Davao Region",
-        "Region XII - SOCCSKSARGEN",
-        "Region XIII - Caraga",
-        "NCR - National Capital Region",
-        "CAR - Cordillera Administrative Region",
-        "BARMM - Bangsamoro Autonomous Region in Muslim Mindanao",
-        "NIR - Negros Island Region",
+        "Region I",
+        "Region II",
+        "Region III",
+        "Region IV-A",
+        "Region IV-B",
+        "Region V",
+        "Region VI",
+        "Region VII",
+        "Region VIII",
+        "Region IX",
+        "Region X",
+        "Region XI",
+        "Region XII",
+        "Region XIII",
+        "NCR",
+        "CAR",
+        "BARMM",
+        "NIR",
       ],
       status: ["pending", "rejected", "accepted"],
     },

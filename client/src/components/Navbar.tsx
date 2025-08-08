@@ -7,8 +7,8 @@ interface NavbarProps {
 
 export default function Navbar({ onRegisterClick }: NavbarProps) {
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-sm shadow-sm opacity-90">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 left-0 w-full z-50 bg-white shadow-sm">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo on the left */}
           <div>
@@ -24,7 +24,7 @@ export default function Navbar({ onRegisterClick }: NavbarProps) {
 
           {/* Register Now button on the right */}
           <div>
-            <Button 
+            <Button
               onClick={onRegisterClick}
               className="font-semibold px-6 py-2 transform hover:shadow-xl"
             >

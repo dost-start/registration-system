@@ -27,6 +27,7 @@ import {
 } from "@/components/registration-form/registrationSchema";
 import { submitRegistration } from "@/app/actions/registration";
 import { useState } from "react";
+import { Constants } from "@/types/supabase";
 
 export default function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,8 +78,11 @@ export default function RegistrationForm() {
   };
 
   return (
-    <section id="registration-form" className="bg-summit-light-gray py-16 px-4">
-      <div className="max-w-2xl mx-auto">
+    <section
+      id="registration-form"
+      className="bg-gradient-to-r from-summit-blue to-summit-teal py-16 px-4"
+    >
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
         <h2 className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center">
           Registration Form
         </h2>
@@ -110,7 +114,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter your email address"
+                      placeholder="Email address"
                       {...field}
                     />
                   </FormControl>
@@ -129,11 +133,7 @@ export default function RegistrationForm() {
                     First Name *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your first name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="First name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,11 +150,7 @@ export default function RegistrationForm() {
                     Last Name *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your last name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -171,11 +167,7 @@ export default function RegistrationForm() {
                     Middle Name (optional)
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your middle name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Middle name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,11 +184,7 @@ export default function RegistrationForm() {
                     Suffix (optional)
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="e.g., Jr., Sr., III"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Suffix" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -213,11 +201,7 @@ export default function RegistrationForm() {
                     Contact Number *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="Enter your contact number"
-                      {...field}
-                    />
+                    <Input type="tel" placeholder="Contact number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -236,7 +220,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="url"
-                      placeholder="Enter your Facebook profile URL"
+                      placeholder="Facebook profile URL"
                       {...field}
                     />
                   </FormControl>
@@ -264,57 +248,13 @@ export default function RegistrationForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="ncr">
-                        National Capital Region (NCR)
-                      </SelectItem>
-                      <SelectItem value="car">
-                        Cordillera Administrative Region (CAR)
-                      </SelectItem>
-                      <SelectItem value="region1">
-                        Region I - Ilocos Region
-                      </SelectItem>
-                      <SelectItem value="region2">
-                        Region II - Cagayan Valley
-                      </SelectItem>
-                      <SelectItem value="region3">
-                        Region III - Central Luzon
-                      </SelectItem>
-                      <SelectItem value="region4a">
-                        Region IV-A - CALABARZON
-                      </SelectItem>
-                      <SelectItem value="region4b">
-                        Region IV-B - MIMAROPA
-                      </SelectItem>
-                      <SelectItem value="region5">
-                        Region V - Bicol Region
-                      </SelectItem>
-                      <SelectItem value="region6">
-                        Region VI - Western Visayas
-                      </SelectItem>
-                      <SelectItem value="region7">
-                        Region VII - Central Visayas
-                      </SelectItem>
-                      <SelectItem value="region8">
-                        Region VIII - Eastern Visayas
-                      </SelectItem>
-                      <SelectItem value="region9">
-                        Region IX - Zamboanga Peninsula
-                      </SelectItem>
-                      <SelectItem value="region10">
-                        Region X - Northern Mindanao
-                      </SelectItem>
-                      <SelectItem value="region11">
-                        Region XI - Davao Region
-                      </SelectItem>
-                      <SelectItem value="region12">
-                        Region XII - SOCCSKSARGEN
-                      </SelectItem>
-                      <SelectItem value="region13">
-                        Region XIII - Caraga
-                      </SelectItem>
-                      <SelectItem value="barmm">
-                        BARMM - Bangsamoro Autonomous Region
-                      </SelectItem>
+                      {Constants.public.Enums.philippine_region.map(
+                        (region) => (
+                          <SelectItem key={region} value={region}>
+                            {region}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -334,7 +274,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your university/institution"
+                      placeholder="University/Institution"
                       {...field}
                     />
                   </FormControl>
@@ -355,7 +295,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your course/program"
+                      placeholder="Course/Program"
                       {...field}
                     />
                   </FormControl>
@@ -406,12 +346,21 @@ export default function RegistrationForm() {
               )}
             />
 
+            {/* In-Person Event Warning */}
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-4">
+              <p className="text-yellow-800 font-medium">
+                Note: This event is{" "}
+                <span className="font-bold">in-person only</span>. Please ensure
+                you are able to physically attend.
+              </p>
+            </div>
+
             {/* Submit Button */}
             <div className="pt-6">
               <Button
                 type="submit"
                 size="lg"
-                className="w-full font-semibold transform hover:shadow-xl"
+                className="w-full font-semibold transform hover:shadow-md bg-summit-orange hover:bg-summit-orange/90 "
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Submit Registration"}

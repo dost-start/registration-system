@@ -1,5 +1,7 @@
 import localFont from "next/font/local";
+import type { Metadata } from "next";
 import "./globals.css";
+
 const garetBook = localFont({
   src: "../assets/Garet-Book.otf",
   variable: "--font-garet-book",
@@ -17,6 +19,48 @@ const monument = localFont({
   variable: "--font-monument",
   display: "swap",
 });
+
+export const metadata: Metadata = {
+  title: "National Technovation Summit 2025 | DOST START",
+  description:
+    "A 1-day summit to ignite innovation, connect sectors, and recognize impactful projects. Featuring TechTalks, networking sessions, and innovation booths. Exclusive for DOST scholars.",
+  keywords: [
+    "technovation",
+    "innovation",
+    "DOST",
+    "summit",
+    "technology",
+    "scholars",
+    "Philippines",
+  ],
+  authors: [{ name: "DOST START" }],
+  openGraph: {
+    title: "National Technovation Summit 2025",
+    description:
+      "Join us for a day of innovation, networking, and recognition of impactful tech projects.",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "National Technovation Summit 2025",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "National Technovation Summit 2025",
+    description:
+      "A 1-day summit to ignite innovation, connect sectors, and recognize impactful projects.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
