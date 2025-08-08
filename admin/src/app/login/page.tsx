@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { orbitron } from "@/lib/fonts";
 import * as Form from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { z } from 'zod';
 import { createClient } from "@supabase/supabase-js";
 import { FormEvent, useState } from "react";
@@ -64,7 +65,7 @@ export default function Login() {
           />
         </div>
         <Form.Form {...form}>
-          <form className="flex flex-col space-y-8" onSubmit={onSubmit}>
+          <form className="flex flex-col space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
             <Form.FormField
               control={form.control}
               name="email"
@@ -72,17 +73,26 @@ export default function Login() {
                 <Form.FormItem>
                   <Form.FormLabel>Email</Form.FormLabel>
                   <Form.FormControl>
-                    <Input  {...field}/>
+                    <Input  {...field} />
                   </Form.FormControl>
+                  <Form.FormMessage />
                 </Form.FormItem>
-              ))}
+              )}
             />
-            <div className="flex flex-col space-y-4">
-              <label>Email</label>
 
-              <label>Password</label>
-              <input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-            </div>
+            <Form.FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <Form.FormItem>
+                  <Form.FormLabel>Password</Form.FormLabel>
+                  <Form.FormControl>
+                    <Input type="password" {...field} />
+                  </Form.FormControl>
+                  <Form.FormMessage />
+                </Form.FormItem>
+              )}
+            />
             <button className="w-1/2 bg-primary rounded-md" type="submit"> Submit </button>
           </form>
         </Form.Form>
