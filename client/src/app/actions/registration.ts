@@ -8,9 +8,6 @@ export async function submitRegistration(data: RegistrationFormData) {
     // Log the received data (remove in production)
     console.log("Registration data received:", data);
 
-    // Delay (remove in production)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     // Temp return success (change in production)
     return {
       success: true,
