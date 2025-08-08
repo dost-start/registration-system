@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 @font-face {
   font-family: "Garet Book";
   src: url("../assets/Garet-Book.otf") format("opentype");
@@ -65,6 +69,17 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* ... existing variables ... */
+  --color-summit-white: #ffffff;
+  --color-summit-black: #393939;
+  --color-summit-light-gray: #fbf8ef;
+  --color-summit-blue: #4d69ee;
+  --color-summit-teal: #18d9ce;
+  --color-summit-pink: #fc4c7a;
+  --color-summit-orange: #fea621;
+  --color-summit-purple: #f7b9ea;
+  --color-summit-dark-gray: #0f110e;
+  --color-summit-navy: #202e4e;
 }
 
 :root {
@@ -100,6 +115,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Custom Summit Theme Colors */
+  --summit-white: #ffffff;
+  --summit-black: #393939;
+  --summit-light-gray: #fbf8ef;
+  --summit-blue: #4d69ee;
+  --summit-teal: #18d9ce;
+  --summit-pink: #fc4c7a;
+  --summit-orange: #fea621;
+  --summit-purple: #f7b9ea;
+  --summit-dark-gray: #0f110e;
+  --summit-navy: #202e4e;
 }
 
 .start-dropshadow {

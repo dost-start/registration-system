@@ -1,28 +1,46 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Metadata } from "next";
+import Navbar from "@/components/Navbar";
+import HeroBanner from "@/components/HeroBanner";
+import EventDetails from "@/components/EventDetails";
+import RegistrationForm from "@/components/registration-form/RegistrationForm";
+
+export const metadata: Metadata = {
+  title: "National Technovation Summit",
+  description: "Join the ultimate innovation challenge",
+  keywords: "technology, innovation, summit, competition, hackathon",
+  openGraph: {
+    title: "National Technovation Summit",
+    description: "Join the ultimate innovation challenge",
+    type: "website",
+    images: [
+      {
+        url: "https://res.cloudinary.com/dsz9ok0yq/image/upload/v1751719220/SUMMIT_cbyrru.png",
+        width: 1200,
+        height: 630,
+        alt: "National Technovation Summit",
+      },
+    ],
+  },
+};
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="grid place-items-center min-h-screen bg-white">
-      <main className="flex flex-col items-center justify-center text-center px-4">
-        <Image
-          src="/logo.png"
-          alt="START Logo"
-          width={200}
-          height={130}
-          priority
-          className="mb-12 drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
-        />
+    <div className="relative">
+      {/* Navbar */}
+      <Navbar />
+      {/* Hero Section */}
+      <HeroBanner />
 
-        <h1
-          className={` text-4xl sm:text-6xl md:text-7xl font-extrabold bg-clip-text bg-gradient-to-r text-primary tracking-wide animate-pulse`}
-        >
-          Starting soon...
-        </h1>
+      {/* Event Details Section */}
+      <EventDetails />
 
-        <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-xl">
-          Preparing your experience. Please stand by.
-        </p>
-      </main>
+      {/* Registration Form Section */}
+      <RegistrationForm />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
