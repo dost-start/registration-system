@@ -410,7 +410,7 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostScholar"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -431,7 +431,7 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostStartMember"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
