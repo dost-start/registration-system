@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import {
@@ -34,26 +35,26 @@ function mapRegionToDbEnum(
     FormRegion,
     Database["public"]["Enums"]["philippine_region"]
   > = {
-    ncr: "NCR - National Capital Region",
-    car: "CAR - Cordillera Administrative Region",
-    region1: "Region I - Ilocos Region",
-    region2: "Region II - Cagayan Valley",
-    region3: "Region III - Central Luzon",
-    region4a: "Region IV-A - CALABARZON",
-    region4b: "MIMAROPA Region",
-    region5: "Region V - Bicol Region",
-    region6: "Region VI - Western Visayas",
-    region7: "Region VII - Central Visayas",
-    region8: "Region VIII - Eastern Visayas",
-    region9: "Region IX - Zamboanga Peninsula",
-    region10: "Region X - Northern Mindanao",
-    region11: "Region XI - Davao Region",
-    region12: "Region XII - SOCCSKSARGEN",
-    region13: "Region XIII - Caraga",
-    barmm: "BARMM - Bangsamoro Autonomous Region in Muslim Mindanao",
+    ncr: "NCR",
+    car: "CAR",
+    region1: "Region I",
+    region2: "Region II",
+    region3: "Region III",
+    region4a: "Region IV-A",
+    region4b: "Region IV-B",
+    region5: "Region V",
+    region6: "Region VI",
+    region7: "Region VII",
+    region8: "Region VIII",
+    region9: "Region IX",
+    region10: "Region X",
+    region11: "Region XI",
+    region12: "Region XII",
+    region13: "Region XIII",
+    barmm: "BARMM",
   };
 
-  return regionMap[formRegion as FormRegion] || "NCR - National Capital Region"; // Fallback to NCR if not found
+  return regionMap[formRegion as FormRegion] || "NCR"; // Fallback to NCR if not found
 }
 
 export async function submitRegistration(data: RegistrationFormData) {
@@ -110,21 +111,51 @@ export async function submitRegistration(data: RegistrationFormData) {
     }
     const supabase = createServerClient<Database>(supabaseUrl, supabaseKey, {
       cookies: {
-        get(name) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll();
         },
-        set(name, value, options) {
+        setAll(cookies: any) {
           try {
-            cookieStore.set({ name, value, ...options });
-          } catch {}
-        },
-        remove(name, options) {
-          try {
-            cookieStore.set({ name, value: "", ...options });
+            cookies.forEach(
+              (cookie: { name: string; value: string; options?: any }) => {
+                cookieStore.set(cookie.name, cookie.value, cookie.options);
+              }
+            );
           } catch {}
         },
       },
     });
+
+    // Check if email already exists
+    const { data: existingUser, error: checkError } = await supabase
+      .from("form_entries")
+      .select("email")
+      .eq("email", validatedData.email)
+      .single();
+
+    if (checkError && checkError.code !== "PGRST116") {
+      // PGRST116 is "not found" error, which is what we want
+      console.error("Email check error:", checkError);
+      return {
+        success: false,
+        message: "Failed to verify email availability. Please try again.",
+        errors: null,
+      };
+    }
+
+    if (existingUser) {
+      return {
+        success: false,
+        message:
+          "This email is already registered. Please use a different email address or contact support if you believe this is an error.",
+        errors: {
+          email: {
+            _errors: ["This email is already registered"],
+          },
+          _errors: [],
+        },
+      };
+    }
 
     const { data: insertedData, error } = await supabase
       .from("form_entries")
@@ -144,10 +175,13 @@ export async function submitRegistration(data: RegistrationFormData) {
 
     console.log("Successfully inserted entry:", insertedData);
 
+    // Encode email in base64 for URL parameter
+    const encodedEmail = Buffer.from(validatedData.email).toString("base64");
+
     return {
       success: true,
       message: "Registration submitted successfully!",
-      redirectUrl: "/success",
+      redirectUrl: `/success?e=${encodedEmail}`,
     };
   } catch (error: unknown) {
     // Error handling (remove in production)

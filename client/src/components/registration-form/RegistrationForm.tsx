@@ -38,6 +38,7 @@ type SubmitMessageType = {
   redirectUrl?: string;
 };
 type FormFieldName = keyof RegistrationFormData;
+import { Constants } from "@/types/supabase";
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -70,9 +71,19 @@ export default function RegistrationForm() {
 
   useEffect(() => {
     if (hasFormErrors) {
-      const errorSummary = document.getElementById("error-summary");
-      if (errorSummary) {
-        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus on the first error field, or the registration form title if no specific field error
+      const firstErrorField = document.querySelector(".text-destructive");
+      const registrationFormTitle = document.getElementById(
+        "registration-form-title"
+      );
+
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (registrationFormTitle) {
+        registrationFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     }
   }, [hasFormErrors]);
@@ -113,14 +124,36 @@ export default function RegistrationForm() {
             });
           }
         });
-        const errorElement = document.querySelector(".text-destructive");
-        if (errorElement) {
-          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          const errorSummary = document.getElementById("error-summary");
-          if (errorSummary) {
-            errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+
+        // Focus on the registration form and scroll to the first error
+        const registrationFormTitle = document.getElementById(
+          "registration-form-title"
+        );
+        const firstErrorField = document.querySelector(".text-destructive");
+
+        if (firstErrorField) {
+          // Scroll to the first error field
+          firstErrorField.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        } else if (registrationFormTitle) {
+          // Scroll to the top of the registration form
+          registrationFormTitle.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      } else {
+        // For general errors, scroll to the top of the registration form
+        const registrationFormTitle = document.getElementById(
+          "registration-form-title"
+        );
+        if (registrationFormTitle) {
+          registrationFormTitle.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }
     } catch {
@@ -129,9 +162,15 @@ export default function RegistrationForm() {
         message: "An unexpected error occurred. Please try again later.",
       });
 
-      const errorSummary = document.getElementById("error-summary");
-      if (errorSummary) {
-        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus on the registration form title for unexpected errors
+      const registrationFormTitle = document.getElementById(
+        "registration-form-title"
+      );
+      if (registrationFormTitle) {
+        registrationFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -139,14 +178,21 @@ export default function RegistrationForm() {
   };
 
   return (
-    <section id="registration-form" className="bg-summit-light-gray py-16 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center">
+    <section
+      id="registration-form"
+      className="bg-gradient-to-r from-summit-blue to-summit-teal py-16 px-4"
+    >
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+        <h2
+          id="registration-form-title"
+          className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center"
+        >
           Registration Form
         </h2>
 
         {submitMessage && (
           <div
+            id="error-summary"
             className={cn(
               "mb-6 p-4 rounded-md border",
               submitMessage.success
@@ -172,7 +218,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter your email address"
+                      placeholder="Email address"
                       {...field}
                     />
                   </FormControl>
@@ -191,11 +237,7 @@ export default function RegistrationForm() {
                     First Name *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your first name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="First name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,11 +254,7 @@ export default function RegistrationForm() {
                     Last Name *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your last name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -233,11 +271,7 @@ export default function RegistrationForm() {
                     Middle Name (optional)
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter your middle name"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Middle name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -254,11 +288,7 @@ export default function RegistrationForm() {
                     Suffix (optional)
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="e.g., Jr., Sr., III"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="Suffix" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -275,11 +305,7 @@ export default function RegistrationForm() {
                     Contact Number *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="Enter your contact number"
-                      {...field}
-                    />
+                    <Input type="tel" placeholder="Contact number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -298,7 +324,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="url"
-                      placeholder="Enter your Facebook profile URL"
+                      placeholder="Facebook profile URL"
                       {...field}
                     />
                   </FormControl>
@@ -316,67 +342,20 @@ export default function RegistrationForm() {
                   <FormLabel className="text-summit-black font-medium">
                     Region *
                   </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select your region" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="ncr">
-                        National Capital Region (NCR)
-                      </SelectItem>
-                      <SelectItem value="car">
-                        Cordillera Administrative Region (CAR)
-                      </SelectItem>
-                      <SelectItem value="region1">
-                        Region I - Ilocos Region
-                      </SelectItem>
-                      <SelectItem value="region2">
-                        Region II - Cagayan Valley
-                      </SelectItem>
-                      <SelectItem value="region3">
-                        Region III - Central Luzon
-                      </SelectItem>
-                      <SelectItem value="region4a">
-                        Region IV-A - CALABARZON
-                      </SelectItem>
-                      <SelectItem value="region4b">
-                        Region IV-B - MIMAROPA
-                      </SelectItem>
-                      <SelectItem value="region5">
-                        Region V - Bicol Region
-                      </SelectItem>
-                      <SelectItem value="region6">
-                        Region VI - Western Visayas
-                      </SelectItem>
-                      <SelectItem value="region7">
-                        Region VII - Central Visayas
-                      </SelectItem>
-                      <SelectItem value="region8">
-                        Region VIII - Eastern Visayas
-                      </SelectItem>
-                      <SelectItem value="region9">
-                        Region IX - Zamboanga Peninsula
-                      </SelectItem>
-                      <SelectItem value="region10">
-                        Region X - Northern Mindanao
-                      </SelectItem>
-                      <SelectItem value="region11">
-                        Region XI - Davao Region
-                      </SelectItem>
-                      <SelectItem value="region12">
-                        Region XII - SOCCSKSARGEN
-                      </SelectItem>
-                      <SelectItem value="region13">
-                        Region XIII - Caraga
-                      </SelectItem>
-                      <SelectItem value="barmm">
-                        BARMM - Bangsamoro Autonomous Region
-                      </SelectItem>
+                    <SelectContent className="max-h-60">
+                      {Constants.public.Enums.philippine_region.map(
+                        (region) => (
+                          <SelectItem key={region} value={region}>
+                            {region}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -396,7 +375,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your university/institution"
+                      placeholder="University/Institution"
                       {...field}
                     />
                   </FormControl>
@@ -417,7 +396,7 @@ export default function RegistrationForm() {
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your course/program"
+                      placeholder="Course/Program"
                       {...field}
                     />
                   </FormControl>
@@ -431,18 +410,21 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostScholar"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-summit-black font-medium">
-                      Is a current DOST Scholar?
-                    </FormLabel>
+                <FormItem>
+                  <div className="flex flex-row items-center space-x-2 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-summit-black font-medium">
+                        Is a current DOST Scholar? *
+                      </FormLabel>
+                    </div>
                   </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -452,7 +434,7 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostStartMember"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -468,12 +450,21 @@ export default function RegistrationForm() {
               )}
             />
 
+            {/* In-Person Event Warning */}
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-4">
+              <p className="text-yellow-800 font-medium">
+                Note: This event is{" "}
+                <span className="font-bold">in-person only</span>. Please ensure
+                you are able to physically attend.
+              </p>
+            </div>
+
             {/* Submit Button */}
             <div className="pt-6">
               <Button
                 type="submit"
                 size="lg"
-                className="w-full font-semibold transform hover:shadow-xl"
+                className="w-full font-semibold transform hover:shadow-md bg-summit-orange hover:bg-summit-orange/90 "
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Submit Registration"}

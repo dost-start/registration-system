@@ -24,8 +24,10 @@ export const registrationSchema = z.object({
   region: z.string().min(1, "Please select your region"),
   university: z.string().min(1, "University is required"),
   course: z.string().min(1, "Course is required"),
-  // not sure if this needs to be required
-  dostScholar: z.boolean(),
+  // DOST Scholar is required to be true
+  dostScholar: z.boolean().refine((val) => val === true, {
+    message: "You must be a current DOST Scholar to register",
+  }),
   dostStartMember: z.boolean(),
 });
 
