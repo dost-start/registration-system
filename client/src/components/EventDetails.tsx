@@ -37,7 +37,7 @@ export default function EventDetails() {
                 <Button
                   variant="default"
                   size="lg"
-                  className="w-full max-w-[250px] font-semibold px-10 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-xl bg-gradient-to-r from-summit-blue to-summit-teal hover:from-summit-blue/90 hover:to-summit-teal/90 text-white"
+                  className="w-[250px] font-semibold px-10 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-xl bg-gradient-to-r from-summit-blue to-summit-teal hover:from-summit-blue/90 hover:to-summit-teal/90 text-white"
                 >
                   Register Now
                 </Button>
@@ -46,7 +46,7 @@ export default function EventDetails() {
                 variant="outline"
                 size="lg"
                 asChild
-                className=" w-full max-w-[250px] font-semibold px-8 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-lg border-summit-blue text-summit-blue hover:bg-summit-blue/5"
+                className="w-[250px] font-semibold px-8 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-lg border-summit-blue text-summit-blue hover:bg-summit-blue/5"
               >
                 <a href="/primer.pdf" target="_blank" rel="noopener noreferrer">
                   Learn More
