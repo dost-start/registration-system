@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   return (
-    <nav className="sticky top-0 left-0 w-full z-50 bg-gradient-to-r from-white to-summit-light-gray/50 shadow-sm backdrop-blur-sm border-b border-gray-100">
+    <nav className="sticky top-0 left-0 w-full z-50 bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div>
@@ -17,7 +17,12 @@ export default function Navbar() {
               className="h-10 w-auto"
             />
           </div>
-          <div>
+          <div className="flex items-center space-x-4">
+            <Link href="#status-check">
+              <Button variant="outlinePrimary" className="px-4 ">
+                Check Registration Status
+              </Button>
+            </Link>
             <Link href="#registration-form">
               <Button className="font-semibold px-6 py-2 transform hover:shadow-xl">
                 Register Now
