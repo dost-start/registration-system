@@ -104,7 +104,7 @@ export default function EventDetails() {
                   Who Can Register
                 </h3>
               </div>
-              <div className="ml-13">
+              <div className="ml-13 space-y-3">
                 <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-summit-pink/10 text-summit-pink border border-summit-pink/20 hover:bg-summit-pink/20 transition-colors duration-200">
                   DOST Scholars Only
                 </span>
