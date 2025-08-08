@@ -4,18 +4,14 @@ import { Button } from "@/components/ui/button";
 import {
   CalendarIcon,
   LocationIcon,
-  TimeIcon,
   UsersIcon,
   InnovationIcon,
   NetworkIcon,
   TechIcon,
 } from "@/components/EventIcons";
+import Link from "next/link";
 
-interface EventDetailsProps {
-  onRegisterClick: () => void;
-}
-
-export default function EventDetails({ onRegisterClick }: EventDetailsProps) {
+export default function EventDetails() {
   return (
     <main className="bg-gradient-to-br from-summit-light-gray via-white to-summit-blue/5 min-h-[calc(100vh-200px)] flex items-center py-4 md:py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto w-full">
@@ -37,14 +33,15 @@ export default function EventDetails({ onRegisterClick }: EventDetailsProps) {
               revolution.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                variant="default"
-                size="lg"
-                onClick={onRegisterClick}
-                className="w-full max-w-[250px] font-semibold px-10 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-xl bg-gradient-to-r from-summit-blue to-summit-teal hover:from-summit-blue/90 hover:to-summit-teal/90 text-white"
-              >
-                Register Now
-              </Button>
+              <Link href="#registration-form">
+                <Button
+                  variant="default"
+                  size="lg"
+                  className="w-full max-w-[250px] font-semibold px-10 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-xl bg-gradient-to-r from-summit-blue to-summit-teal hover:from-summit-blue/90 hover:to-summit-teal/90 text-white"
+                >
+                  Register Now
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="lg"

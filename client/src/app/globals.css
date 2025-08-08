@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 @font-face {
   font-family: "Garet Book";
   src: url("../assets/Garet-Book.otf") format("opentype");
