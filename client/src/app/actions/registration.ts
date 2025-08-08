@@ -126,6 +126,37 @@ export async function submitRegistration(data: RegistrationFormData) {
       },
     });
 
+    // Check if email already exists
+    const { data: existingUser, error: checkError } = await supabase
+      .from("form_entries")
+      .select("email")
+      .eq("email", validatedData.email)
+      .single();
+
+    if (checkError && checkError.code !== "PGRST116") {
+      // PGRST116 is "not found" error, which is what we want
+      console.error("Email check error:", checkError);
+      return {
+        success: false,
+        message: "Failed to verify email availability. Please try again.",
+        errors: null,
+      };
+    }
+
+    if (existingUser) {
+      return {
+        success: false,
+        message:
+          "This email is already registered. Please use a different email address or contact support if you believe this is an error.",
+        errors: {
+          email: {
+            _errors: ["This email is already registered"],
+          },
+          _errors: [],
+        },
+      };
+    }
+
     const { data: insertedData, error } = await supabase
       .from("form_entries")
       .insert(formEntry)
@@ -144,10 +175,13 @@ export async function submitRegistration(data: RegistrationFormData) {
 
     console.log("Successfully inserted entry:", insertedData);
 
+    // Encode email in base64 for URL parameter
+    const encodedEmail = Buffer.from(validatedData.email).toString("base64");
+
     return {
       success: true,
       message: "Registration submitted successfully!",
-      redirectUrl: "/success",
+      redirectUrl: `/success?e=${encodedEmail}`,
     };
   } catch (error: unknown) {
     // Error handling (remove in production)

@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Mail, FileText } from "lucide-react";
+import { CheckCircle, Mail, FileText, XCircle } from "lucide-react";
 import Link from "next/link";
+import { verifyRegistration } from "@/app/actions/verify-registration";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Registration Successful - National Technovation Summit",
@@ -23,7 +25,60 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SuccessPage() {
+interface SuccessPageProps {
+  searchParams: Promise<{ e?: string }>;
+}
+
+export default async function SuccessPage({ searchParams }: SuccessPageProps) {
+  const params = await searchParams;
+  const encodedEmail = params.e;
+
+  // If no email parameter, redirect to home
+  if (!encodedEmail) {
+    redirect("/");
+  }
+
+  // Verify the registration server-side
+  const verificationResult = await verifyRegistration(encodedEmail);
+
+  // If verification failed, show error state
+  if (!verificationResult.success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-summit-light-gray via-white to-summit-blue/5 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto text-center">
+          {/* Error Icon */}
+          <div className="flex justify-center mb-8">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+              <XCircle className="w-12 h-12 text-red-600" />
+            </div>
+          </div>
+
+          {/* Error Message */}
+          <div className="mb-8">
+            <h1 className="text-4xl sm:text-5xl font-bold text-summit-black mb-4 leading-tight font-kagitingan">
+              Registration Not Found
+            </h1>
+            <p className="text-xl text-summit-black/70 mb-6">
+              We couldn&apos;t verify your registration. Please try registering
+              again.
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <Button
+            variant="default"
+            size="lg"
+            asChild
+            className="w-full max-w-[250px] font-semibold px-8 py-4 text-lg transform hover:scale-105 transition-all duration-200 hover:shadow-xl bg-gradient-to-r from-summit-blue to-summit-teal hover:from-summit-blue/90 hover:to-summit-teal/90 text-white"
+          >
+            <Link href="/">Back to Registration</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const { registrationData } = verificationResult;
   return (
     <div className="py-12 min-h-screen bg-gradient-to-br from-summit-light-gray via-white to-summit-blue/5 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto text-center">
@@ -39,8 +94,53 @@ export default function SuccessPage() {
           <h1 className="text-4xl sm:text-5xl font-bold text-summit-black mb-4 leading-tight font-kagitingan">
             Registration Successful!
           </h1>
-          <p className="text-xl text-summit-black/70 mb-6">
-            Thank you for registering for the National Technovation Summit 2025
+          <p className="text-xl text-summit-black/70 mb-2">
+            Thank you,{" "}
+            <strong>
+              {registrationData?.firstName} {registrationData?.lastName}
+            </strong>
+            !
+          </p>
+          <p className="text-lg text-summit-black/60">
+            Your registration for the National Technovation Summit 2025 has been
+            confirmed.
+          </p>
+        </div>
+
+        {/* Registration Status */}
+        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 mb-6">
+          <div className="flex items-center justify-center mb-4">
+            <div
+              className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                registrationData?.status === "accepted"
+                  ? "bg-green-100"
+                  : registrationData?.status === "rejected"
+                  ? "bg-red-100"
+                  : "bg-yellow-100"
+              }`}
+            >
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  registrationData?.status === "accepted"
+                    ? "bg-green-600"
+                    : registrationData?.status === "rejected"
+                    ? "bg-red-600"
+                    : "bg-yellow-600"
+                }`}
+              ></div>
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold text-summit-black mb-2">
+            Registration Status
+          </h3>
+          <p className="text-summit-black/70">
+            Status:{" "}
+            <span className="font-semibold capitalize">
+              {registrationData?.status || "Pending"}
+            </span>
+          </p>
+          <p className="text-sm text-summit-black/60 mt-1">
+            Email: {registrationData?.email}
           </p>
         </div>
 

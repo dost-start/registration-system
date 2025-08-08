@@ -71,9 +71,19 @@ export default function RegistrationForm() {
 
   useEffect(() => {
     if (hasFormErrors) {
-      const errorSummary = document.getElementById("error-summary");
-      if (errorSummary) {
-        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus on the first error field, or the registration form title if no specific field error
+      const firstErrorField = document.querySelector(".text-destructive");
+      const registrationFormTitle = document.getElementById(
+        "registration-form-title"
+      );
+
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (registrationFormTitle) {
+        registrationFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     }
   }, [hasFormErrors]);
@@ -114,14 +124,36 @@ export default function RegistrationForm() {
             });
           }
         });
-        const errorElement = document.querySelector(".text-destructive");
-        if (errorElement) {
-          errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          const errorSummary = document.getElementById("error-summary");
-          if (errorSummary) {
-            errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+
+        // Focus on the registration form and scroll to the first error
+        const registrationFormTitle = document.getElementById(
+          "registration-form-title"
+        );
+        const firstErrorField = document.querySelector(".text-destructive");
+
+        if (firstErrorField) {
+          // Scroll to the first error field
+          firstErrorField.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        } else if (registrationFormTitle) {
+          // Scroll to the top of the registration form
+          registrationFormTitle.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      } else {
+        // For general errors, scroll to the top of the registration form
+        const registrationFormTitle = document.getElementById(
+          "registration-form-title"
+        );
+        if (registrationFormTitle) {
+          registrationFormTitle.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }
     } catch {
@@ -130,9 +162,15 @@ export default function RegistrationForm() {
         message: "An unexpected error occurred. Please try again later.",
       });
 
-      const errorSummary = document.getElementById("error-summary");
-      if (errorSummary) {
-        errorSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus on the registration form title for unexpected errors
+      const registrationFormTitle = document.getElementById(
+        "registration-form-title"
+      );
+      if (registrationFormTitle) {
+        registrationFormTitle.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -145,12 +183,16 @@ export default function RegistrationForm() {
       className="bg-gradient-to-r from-summit-blue to-summit-teal py-16 px-4"
     >
       <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center">
+        <h2
+          id="registration-form-title"
+          className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center"
+        >
           Registration Form
         </h2>
 
         {submitMessage && (
           <div
+            id="error-summary"
             className={cn(
               "mb-6 p-4 rounded-md border",
               submitMessage.success
