@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { RefreshCw, Download, Users } from "lucide-react";
+import { Download, RefreshCw, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import { fetchAllRegistrants } from "@/lib/data";
-import { exportRegistrantsListToCSV } from "@/lib/export";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminHeader } from "@/components/AdminHeader";
 import { CompactStatsCards } from "@/components/StatsCards";
 import { RegistrantDataTable } from "@/components/registrant-table/RegistrantDataTable";
-import { AddRegistrantDialog } from "@/components/AddRegistrantDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { fetchAllRegistrants } from "@/lib/data";
+import { exportRegistrantsListToCSV } from "@/lib/export";
 import type { FormEntry, RegistrantStats } from "@/types/form-entries";
+import { AddRegistrantDialog } from "@/components/AddRegistrantDialog";
 
 export default function EventManagement() {
   const [registrants, setRegistrants] = useState<FormEntry[]>([]);
@@ -124,7 +124,6 @@ export default function EventManagement() {
         backButtonHref="/national-summit"
         backButtonText="Back to Dashboard"
       >
-        <AddRegistrantDialog onRegistrantAdded={refreshData} />
         <Button
           onClick={fetchData}
           variant="outline"
@@ -156,9 +155,12 @@ export default function EventManagement() {
         {/* Registrants Table */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Registrants Management
+            <CardTitle className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Registrants Management
+              </div>
+              <AddRegistrantDialog onRegistrantAdded={refreshData} />
             </CardTitle>
           </CardHeader>
           <CardContent>
