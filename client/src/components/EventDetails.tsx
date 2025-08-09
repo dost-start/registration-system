@@ -61,7 +61,7 @@ export default function EventDetails() {
           {/* Left Column - Event Info */}
           <div className="space-y-8">
             {/* Date & Time */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-summit-blue/10 rounded-xl p-6 shadow-lg border border-summit-blue hover:shadow-xl transition-shadow duration-300">
               <div className="flex items-center mb-4">
                 <CalendarIcon />
                 <h3 className="text-xl font-semibold text-summit-black ml-3">
@@ -69,11 +69,11 @@ export default function EventDetails() {
                 </h3>
               </div>
               <div className="ml-13">
-                <p className="text-lg text-summit-black/80 font-medium">
+                <p className="text-lg text-summit-black font-semibold">
                   August 31, 2025
                 </p>
                 <div className="flex items-center">
-                  <p className="text-base text-summit-black/80 ">
+                  <p className="text-base text-summit-black font-medium">
                     8:00 AM - 8:00 PM
                   </p>
                 </div>
@@ -81,7 +81,7 @@ export default function EventDetails() {
             </div>
 
             {/* Location */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-summit-teal/10 rounded-xl p-6 shadow-lg border border-summit-teal hover:shadow-xl transition-shadow duration-300">
               <div className="flex items-center mb-4">
                 <LocationIcon />
                 <h3 className="text-xl font-semibold text-summit-black ml-3">
@@ -89,15 +89,17 @@ export default function EventDetails() {
                 </h3>
               </div>
               <div className="ml-13">
-                <p className="text-lg text-summit-black/80 mb-1 font-medium">
+                <p className="text-lg text-summit-black font-semibold mb-1">
                   Marco Polo Plaza,
                 </p>
-                <p className="text-base text-summit-black/80 ">Cebu City</p>
+                <p className="text-base text-summit-black font-medium">
+                  Cebu City
+                </p>
               </div>
             </div>
 
             {/* Who Can Join */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-summit-pink/10 rounded-xl p-6 shadow-lg border border-summit-pink hover:shadow-xl transition-shadow duration-300">
               <div className="flex items-center mb-4">
                 <UsersIcon />
                 <h3 className="text-xl font-semibold text-summit-black ml-3">
@@ -105,7 +107,7 @@ export default function EventDetails() {
                 </h3>
               </div>
               <div className="ml-13 space-y-3">
-                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-summit-pink/10 text-summit-pink border border-summit-pink/20 hover:bg-summit-pink/20 transition-colors duration-200">
+                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-summit-pink/20 text-summit-black border border-summit-pink/20 hover:bg-summit-pink/30 transition-colors duration-200">
                   DOST Scholars Only
                 </span>
               </div>
@@ -115,7 +117,7 @@ export default function EventDetails() {
           {/* Right Column - About */}
           <div className="space-y-8">
             {/* About the Event */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 h-full hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-summit-orange/10 rounded-xl p-6 shadow-lg border border-summit-orange h-full hover:shadow-xl transition-shadow duration-300">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-summit-orange/10 rounded-lg flex items-center justify-center">
                   <div className="w-2 h-2 bg-summit-orange rounded-full"></div>
@@ -125,7 +127,7 @@ export default function EventDetails() {
                 </h3>
               </div>
               <div className="space-y-4 text-summit-black/80 ml-13">
-                <p className="text-base leading-relaxed">
+                <p className="text-base leading-relaxed text-summit-black">
                   A 1-day summit to ignite innovation, connect sectors, and
                   recognize impactful projects from the hackathon.
                 </p>
@@ -136,17 +138,17 @@ export default function EventDetails() {
                   <ul className="space-y-3">
                     <li className="flex items-center text-sm">
                       <TechIcon />
-                      <span className="ml-3 font-medium">TechTalks</span>
+                      <span className="ml-3 font-semibold">TechTalks</span>
                     </li>
                     <li className="flex items-center text-sm">
                       <NetworkIcon />
-                      <span className="ml-3 font-medium">
+                      <span className="ml-3 font-semibold">
                         Networking Sessions
                       </span>
                     </li>
                     <li className="flex items-center text-sm">
                       <InnovationIcon />
-                      <span className="ml-3 font-medium">
+                      <span className="ml-3 font-semibold">
                         Innovation Booths
                       </span>
                     </li>
