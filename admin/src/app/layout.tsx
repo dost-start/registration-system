@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "START Admin Portal",
-  description: "Admin portal for the START registration system",
+  title: "START Events Admin Portal",
+  description: "Admin portal for the START Events registration system",
 };
 
 export default function RootLayout({
