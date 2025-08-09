@@ -152,7 +152,7 @@ export default function RegistrantTableColumns({
               {/* Check-in/Check-out Actions */}
               <DropdownMenuItem
                 onClick={() => toggleCheckIn(registrant)}
-                className="flex items-center gap-2 bg-accent"
+                className={"flex items-center gap-2"}
               >
                 {registrant.is_checked_in ? (
                   <>

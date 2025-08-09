@@ -1,7 +1,7 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {
   const email = formData.get("email") as string;
@@ -22,9 +22,6 @@ export async function signIn(formData: FormData) {
     if (error) {
       return { error: error.message };
     }
-
-    // Successful login - redirect to national-summit
-    redirect("/national-summit");
   } catch (err) {
     console.error("Login error:", err);
     return {

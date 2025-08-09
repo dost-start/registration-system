@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { orbitron } from "@/lib/fonts";
+import { redirect } from "next/navigation";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -36,6 +37,8 @@ export default function LoginPage() {
 
     if (result?.error) {
       setError(result.error);
+    } else {
+      redirect("/national-summit");
     }
   }
 
@@ -57,10 +60,11 @@ export default function LoginPage() {
             <CardTitle
               className={`${orbitron.variable} font-orbitron text-2xl font-bold text-primary`}
             >
-              Admin Portal
+              Events Management Admin Portal
             </CardTitle>
             <CardDescription className="mt-2">
-              Sign in to your account to access the admin dashboard
+              Sign in to your account to access the events management admin
+              dashboard
             </CardDescription>
           </div>
         </CardHeader>
