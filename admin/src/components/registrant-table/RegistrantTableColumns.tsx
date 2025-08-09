@@ -146,7 +146,7 @@ function ActionCell({
             }
             className="flex items-center gap-2"
           >
-            <XCircle className="w-4 h-4 text-red-600" />
+            <XCircle className="w-4 h-4 text-destructive" />
             <span>Reject</span>
             {registrant.status === "rejected" && (
               <Badge variant="secondary" className="ml-auto text-xs">
