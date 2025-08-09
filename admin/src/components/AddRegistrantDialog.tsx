@@ -1,18 +1,19 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -22,7 +23,19 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
-import { RegionType } from "@/types/form-entries";
+import { FormEntryInsert, REGIONS_ARRAY } from "@/types/form-entries";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { addRegistrantSchema } from "@/schemas/addRegistrantSchema";
+
+type AddRegistrantFormData = z.infer<typeof addRegistrantSchema>;
 
 interface AddRegistrantDialogProps {
   onRegistrantAdded: () => void;
@@ -34,75 +47,55 @@ export function AddRegistrantDialog({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<{
-    first_name: string;
-    middle_name: string;
-    last_name: string;
-    suffix: string;
-    email: string;
-    contact_number: string;
-    facebook_profile: string;
-    region: RegionType;
-    university: string;
-    course: string;
-    is_dost_scholar: boolean;
-    is_start_member: boolean;
-    status: "pending" | "accepted" | "rejected";
-    is_checked_in: boolean;
-    remarks: string;
-  }>({
-    first_name: "",
-    middle_name: "",
-    last_name: "",
-    suffix: "",
-    email: "",
-    contact_number: "",
-    facebook_profile: "",
-    region: "Region VII" as RegionType,
-    university: "",
-    course: "",
-    is_dost_scholar: true,
-    is_start_member: false,
-    status: "pending",
-    is_checked_in: false,
-    remarks: "",
+
+  const form = useForm<AddRegistrantFormData>({
+    resolver: zodResolver(addRegistrantSchema),
+    defaultValues: {
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      suffix: "",
+      email: "",
+      contact_number: "",
+      facebook_profile: "",
+      region: "Region VII",
+      university: "",
+      course: "",
+      is_dost_scholar: true,
+      is_start_member: false,
+      status: "pending",
+      is_checked_in: false,
+      remarks: "",
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (data: AddRegistrantFormData) => {
     try {
       setIsLoading(true);
       setError(null);
 
       const supabase = createClient();
-      const { error } = await supabase.from("form_entries").insert({
-        ...formData,
+
+      // Convert form data to match FormEntryInsert type
+      const insertData: FormEntryInsert = {
+        ...data,
+        // Convert empty strings to null for optional fields
+        middle_name: data.middle_name || null,
+        suffix: data.suffix || null,
+        email: data.email || null,
+        facebook_profile: data.facebook_profile || null,
+        remarks: data.remarks || null,
         created_at: new Date().toISOString(),
-      });
+      };
+
+      const { error } = await supabase.from("form_entries").insert(insertData);
 
       if (error) {
         throw error;
       }
 
       setOpen(false);
-      setFormData({
-        first_name: "",
-        middle_name: "",
-        last_name: "",
-        suffix: "",
-        email: "",
-        contact_number: "",
-        facebook_profile: "",
-        region: "Region VII" as RegionType,
-        university: "",
-        course: "",
-        is_dost_scholar: true,
-        is_start_member: false,
-        status: "pending",
-        is_checked_in: false,
-        remarks: "",
-      });
+      form.reset();
       onRegistrantAdded();
     } catch (err) {
       console.error("Error adding registrant:", err);
@@ -112,302 +105,305 @@ export function AddRegistrantDialog({
     }
   };
 
-  const regions = [
-    "Region I",
-    "Region II",
-    "Region III",
-    "Region IV-A",
-    "Region IV-B",
-    "Region V",
-    "Region VI",
-    "Region VII",
-    "Region VIII",
-    "Region IX",
-    "Region X",
-    "Region XI",
-    "Region XII",
-    "Region XIII",
-    "NCR",
-    "CAR",
-    "BARMM",
-    "MIMAROPA",
-  ];
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
           Add Registrant
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Registrant</DialogTitle>
-          <DialogDescription>
+      </SheetTrigger>
+      <SheetContent className="overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>Add New Registrant</SheetTitle>
+          <SheetDescription>
             Add a new registrant to the National Technovation Summit 2025.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-              {error}
-            </div>
-          )}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            {error && (
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+                {error}
+              </div>
+            )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="first_name">First Name *</Label>
-              <Input
-                id="first_name"
-                value={formData.first_name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    first_name: e.target.value,
-                  }))
-                }
-                disabled={isLoading}
-                required
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="first_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name *</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name *</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="last_name">Last Name *</Label>
-              <Input
-                id="last_name"
-                value={formData.last_name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    last_name: e.target.value,
-                  }))
-                }
-                disabled={isLoading}
-                required
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="middle_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Middle Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="middle_name">Middle Name</Label>
-              <Input
-                id="middle_name"
-                value={formData.middle_name}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    middle_name: e.target.value,
-                  }))
-                }
-                disabled={isLoading}
+              <FormField
+                control={form.control}
+                name="suffix"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Suffix</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="suffix">Suffix</Label>
-              <Input
-                id="suffix"
-                value={formData.suffix}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, suffix: e.target.value }))
-                }
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              disabled={isLoading}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="email" disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="contact_number">Contact Number *</Label>
-            <Input
-              id="contact_number"
-              value={formData.contact_number}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  contact_number: e.target.value,
-                }))
-              }
-              disabled={isLoading}
-              required
+            <FormField
+              control={form.control}
+              name="contact_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Number *</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="facebook_profile">Facebook Profile</Label>
-            <Input
-              id="facebook_profile"
-              value={formData.facebook_profile}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  facebook_profile: e.target.value,
-                }))
-              }
-              disabled={isLoading}
+            <FormField
+              control={form.control}
+              name="facebook_profile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Facebook Profile</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Region *</Label>
-              <Select
-                value={formData.region}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    region: value as RegionType,
-                  }))
-                }
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="region"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Region *</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {REGIONS_ARRAY.map((region) => (
+                          <SelectItem key={region} value={region}>
+                            {region}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="university"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>University *</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="course"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Course *</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="accepted">Accepted</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="is_dost_scholar"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>DOST Scholar</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="is_start_member"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>START Member</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="is_checked_in"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Checked In</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="remarks"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Remarks</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <SheetFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isLoading}
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {regions.map((region) => (
-                    <SelectItem key={region} value={region}>
-                      {region}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="university">University *</Label>
-              <Input
-                id="university"
-                value={formData.university}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    university: e.target.value,
-                  }))
-                }
-                disabled={isLoading}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="course">Course *</Label>
-            <Input
-              id="course"
-              value={formData.course}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, course: e.target.value }))
-              }
-              disabled={isLoading}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Status</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  status: value as "pending" | "accepted" | "rejected",
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="accepted">Accepted</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_dost_scholar"
-                checked={formData.is_dost_scholar}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    is_dost_scholar: !!checked,
-                  }))
-                }
-              />
-              <Label htmlFor="is_dost_scholar">DOST Scholar</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_start_member"
-                checked={formData.is_start_member}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    is_start_member: !!checked,
-                  }))
-                }
-              />
-              <Label htmlFor="is_start_member">START Member</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_checked_in"
-                checked={formData.is_checked_in}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({ ...prev, is_checked_in: !!checked }))
-                }
-              />
-              <Label htmlFor="is_checked_in">Checked In</Label>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="remarks">Remarks</Label>
-            <Input
-              id="remarks"
-              value={formData.remarks}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, remarks: e.target.value }))
-              }
-              disabled={isLoading}
-            />
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Registrant"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Adding..." : "Add Registrant"}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 }

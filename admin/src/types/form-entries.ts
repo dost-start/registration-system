@@ -23,3 +23,24 @@ export interface PaginationInfo {
   totalItems: number;
   itemsPerPage: number;
 }
+
+export const REGIONS_ARRAY: RegionType[] = [
+  "Region I",
+  "Region II",
+  "Region III",
+  "Region IV-A",
+  "Region IV-B",
+  "Region V",
+  "Region VI",
+  "Region VII",
+  "Region VIII",
+  "Region IX",
+  "Region X",
+  "Region XI",
+  "Region XII",
+  "Region XIII",
+  "NCR",
+  "CAR",
+  "BARMM",
+  "NIR",
+];
