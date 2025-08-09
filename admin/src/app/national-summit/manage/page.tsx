@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Users, Download, RefreshCw, LogOut } from "lucide-react";
+import { RefreshCw, Download, Users } from "lucide-react";
 
-import { createClient } from "@/lib/supabase/client";
-import { signOut } from "@/app/actions/auth";
+import { fetchAllRegistrants } from "@/lib/data";
+import { exportRegistrantsListToCSV } from "@/lib/export";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RegistrantDataTable } from "@/components/RegistrantDataTable";
-import { orbitron } from "@/lib/fonts";
+import { AdminHeader } from "@/components/AdminHeader";
+import { CompactStatsCards } from "@/components/StatsCards";
+import { RegistrantDataTable } from "@/components/registrant-table/RegistrantDataTable";
+import { AddRegistrantDialog } from "@/components/AddRegistrantDialog";
 import type { FormEntry, RegistrantStats } from "@/types/form-entries";
 
 export default function EventManagement() {
@@ -28,30 +28,21 @@ export default function EventManagement() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const supabase = createClient();
+      const registrantsData = await fetchAllRegistrants();
+      setRegistrants(registrantsData);
 
-      // Fetch all registrants
-      const { data: registrantsData, error: registrantsError } = await supabase
-        .from("form_entries")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (registrantsError) {
-        throw registrantsError;
-      }
-
-      setRegistrants(registrantsData || []);
-
-      // Calculate stats
-      const total = registrantsData?.length || 0;
-      const accepted =
-        registrantsData?.filter((r) => r.status === "accepted").length || 0;
-      const rejected =
-        registrantsData?.filter((r) => r.status === "rejected").length || 0;
-      const pending =
-        registrantsData?.filter((r) => r.status === "pending").length || 0;
-      const checkedIn =
-        registrantsData?.filter((r) => r.is_checked_in).length || 0;
+      // Calculate stats from the fetched data
+      const total = registrantsData.length;
+      const accepted = registrantsData.filter(
+        (r) => r.status === "accepted"
+      ).length;
+      const rejected = registrantsData.filter(
+        (r) => r.status === "rejected"
+      ).length;
+      const pending = registrantsData.filter(
+        (r) => r.status === "pending"
+      ).length;
+      const checkedIn = registrantsData.filter((r) => r.is_checked_in).length;
 
       setStats({
         total,
@@ -68,74 +59,45 @@ export default function EventManagement() {
     }
   };
 
+  // Refresh data without showing the main loading spinner
+  const refreshData = async () => {
+    try {
+      const registrantsData = await fetchAllRegistrants();
+      setRegistrants(registrantsData);
+
+      // Calculate stats from the fetched data
+      const total = registrantsData.length;
+      const accepted = registrantsData.filter(
+        (r) => r.status === "accepted"
+      ).length;
+      const rejected = registrantsData.filter(
+        (r) => r.status === "rejected"
+      ).length;
+      const pending = registrantsData.filter(
+        (r) => r.status === "pending"
+      ).length;
+      const checkedIn = registrantsData.filter((r) => r.is_checked_in).length;
+
+      setStats({
+        total,
+        accepted,
+        rejected,
+        pending,
+        checkedIn,
+      });
+    } catch (err) {
+      console.error("Error refreshing data:", err);
+      // Don't set error state here as it would disrupt the UI
+    }
+  };
+
+  const handleExportCSV = () => {
+    exportRegistrantsListToCSV(registrants);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  const exportToCSV = () => {
-    if (registrants.length === 0) return;
-
-    // Create CSV headers
-    const headers = [
-      "ID",
-      "First Name",
-      "Middle Name",
-      "Last Name",
-      "Suffix",
-      "Email",
-      "Contact Number",
-      "Facebook Profile",
-      "Region",
-      "University",
-      "Course",
-      "DOST Scholar",
-      "START Member",
-      "Status",
-      "Checked In",
-      "Created At",
-      "Remarks",
-    ];
-
-    // Create CSV rows
-    const rows = registrants.map((registrant) => [
-      registrant.id,
-      registrant.first_name,
-      registrant.middle_name || "",
-      registrant.last_name,
-      registrant.suffix || "",
-      registrant.email || "",
-      registrant.contact_number,
-      registrant.facebook_profile || "",
-      registrant.region,
-      registrant.university,
-      registrant.course,
-      registrant.is_dost_scholar ? "Yes" : "No",
-      registrant.is_start_member ? "Yes" : "No",
-      registrant.status,
-      registrant.is_checked_in ? "Yes" : "No",
-      new Date(registrant.created_at).toISOString(),
-      registrant.remarks || "",
-    ]);
-
-    // Combine headers and rows
-    const csvContent = [headers, ...rows]
-      .map((row) => row.map((field) => `"${field}"`).join(","))
-      .join("\n");
-
-    // Create and download file
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `registrants_${new Date().toISOString().split("T")[0]}.csv`
-    );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   if (error) {
     return (
@@ -156,143 +118,39 @@ export default function EventManagement() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-primary/5">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link href="/national-summit">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-2"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-              <div className="h-6 border-l border-gray-300"></div>
-              <Link href="/">
-                <Image
-                  src="/logo-s.png"
-                  alt="START Logo"
-                  width={100}
-                  height={32}
-                  priority
-                  className="h-8 w-auto cursor-pointer"
-                />
-              </Link>
-              <div>
-                <h1
-                  className={`${orbitron.variable} font-orbitron text-xl font-bold text-primary`}
-                >
-                  Event Management
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  National Technovation Summit 2025
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={fetchData}
-                variant="outline"
-                size="sm"
-                disabled={isLoading}
-              >
-                <RefreshCw
-                  className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-                />
-                Refresh
-              </Button>
-              <Button
-                onClick={exportToCSV}
-                variant="outline"
-                size="sm"
-                disabled={registrants.length === 0}
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export CSV
-              </Button>
-              <form action={signOut}>
-                <Button variant="outline" type="submit" size="sm">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </Button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </header>
+      <AdminHeader
+        title="Event Management"
+        showBackButton
+        backButtonHref="/national-summit"
+        backButtonText="Back to Dashboard"
+      >
+        <AddRegistrantDialog onRegistrantAdded={refreshData} />
+        <Button
+          onClick={fetchData}
+          variant="outline"
+          size="sm"
+          disabled={isLoading}
+        >
+          <RefreshCw
+            className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+          />
+          Refresh
+        </Button>
+        <Button
+          onClick={handleExportCSV}
+          variant="outline"
+          size="sm"
+          disabled={registrants.length === 0}
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Export CSV
+        </Button>
+      </AdminHeader>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                {stats.total}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Accepted
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {stats.accepted}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Pending
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">
-                {stats.pending}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Rejected
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">
-                {stats.rejected}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Checked In
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {stats.checkedIn}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="mb-8">
+          <CompactStatsCards stats={stats} />
         </div>
 
         {/* Registrants Table */}
@@ -312,7 +170,7 @@ export default function EventManagement() {
             ) : (
               <RegistrantDataTable
                 data={registrants}
-                onDataChange={fetchData}
+                onDataChange={refreshData}
               />
             )}
           </CardContent>
