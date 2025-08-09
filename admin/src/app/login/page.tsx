@@ -1,110 +1,108 @@
-'use client';
+"use client";
 
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import Image from "next/image";
-import { orbitron } from "@/lib/fonts";
-import * as Form from "@/components/ui/form";
+
+import { signIn } from "@/app/actions/auth";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { z } from 'zod';
-import { createClient } from "@supabase/supabase-js";
-import { FormEvent, useState } from "react";
-import { useForm } from 'react-hook-form';
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { orbitron } from "@/lib/fonts";
+import { redirect } from "next/navigation";
 
+function SubmitButton() {
+  const { pending } = useFormStatus();
 
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "Signing in..." : "Sign In"}
+    </Button>
+  );
+}
 
-export default function Login() {
-  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export default function LoginPage() {
+  const [error, setError] = useState<string | null>(null);
 
-  const router = useRouter();
-  const formSchema = z.object({
-    email: z.email(),
-    password: z.string()
-  });
+  async function handleSubmit(formData: FormData) {
+    setError(null);
+    const result = await signIn(formData);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: ""
-    }
-  })
-
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password
-      })
-      if (error) {
-        throw new Error(error.message);
-      }
-      router.push('/');
-
-    }
-    catch (error: unknown) {
-      if (error instanceof Error)
-        console.error("Supabase ERROR: ", error.message);
-      else
-        console.error("Unexpected ERROR: ", error);
-
+    if (result?.error) {
+      setError(result.error);
+    } else {
+      redirect("/national-summit");
     }
   }
 
-
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-
   return (
-    <div className="flex flex-col items-center justify-center max-h-dvh h-dvh px-10">
-      <div
-        className="w-auto px-25 py-15 border-2 focus-within:border-primary shadow-2xl shadow-primary transition-shadow duration-300 ease-in-out p-5 rounded-lg flex flex-col gap-5 items-start justify-center">
-        <div className="flex flex-col gap-2 items-start justify-center">
-          <Image
-            src="/logo.png"
-            alt="START Logo"
-            width={200}
-            height={130}
-            priority
-            className="mb-12 drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
-          />
-        </div>
-        <Form.Form {...form}>
-          <form className="flex flex-col space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
-            <Form.FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <Form.FormItem>
-                  <Form.FormLabel>Email</Form.FormLabel>
-                  <Form.FormControl>
-                    <Input  {...field} />
-                  </Form.FormControl>
-                  <Form.FormMessage />
-                </Form.FormItem>
-              )}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-primary/5 px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-4 text-center">
+          <div className="flex justify-center">
+            <Image
+              src="/logo.png"
+              alt="START Logo"
+              width={120}
+              height={80}
+              priority
+              className="drop-shadow-[0_4px_8px_rgba(0,0,0,0.15)]"
             />
+          </div>
+          <div>
+            <CardTitle
+              className={`${orbitron.variable} font-orbitron text-2xl font-bold text-primary`}
+            >
+              Events Management Admin Portal
+            </CardTitle>
+            <CardDescription className="mt-2">
+              Sign in to your account to access the events management admin
+              dashboard
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form action={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+                {error}
+              </div>
+            )}
 
-            <Form.FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <Form.FormItem>
-                  <Form.FormLabel>Password</Form.FormLabel>
-                  <Form.FormControl>
-                    <Input type="password" {...field} />
-                  </Form.FormControl>
-                  <Form.FormMessage />
-                </Form.FormItem>
-              )}
-            />
-            <button className="w-1/2 bg-primary rounded-md" type="submit"> Submit </button>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+                minLength={6}
+              />
+            </div>
+
+            <SubmitButton />
           </form>
-        </Form.Form>
-      </div>
-    </div >
+        </CardContent>
+      </Card>
+    </div>
   );
-} 
+}
