@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchAllRegistrants } from "@/lib/data";
 import { exportRegistrantsListToCSV } from "@/lib/export";
 import type { FormEntry, RegistrantStats } from "@/types/form-entries";
-import { AddRegistrantDialog } from "@/components/AddRegistrantDialog";
+import { AddRegistrantSheet } from "@/components/AddRegistrantSheet";
 
 export default function EventManagement() {
   const [registrants, setRegistrants] = useState<FormEntry[]>([]);
@@ -122,7 +122,7 @@ export default function EventManagement() {
         title="Event Management"
         showBackButton
         backButtonHref="/national-summit"
-        backButtonText="Back to Dashboard"
+        backButtonText="Back"
       >
         <Button
           onClick={fetchData}
@@ -160,7 +160,7 @@ export default function EventManagement() {
                 <Users className="w-5 h-5" />
                 Registrants Management
               </div>
-              <AddRegistrantDialog onRegistrantAdded={refreshData} />
+              <AddRegistrantSheet onRegistrantAdded={refreshData} />
             </CardTitle>
           </CardHeader>
           <CardContent>

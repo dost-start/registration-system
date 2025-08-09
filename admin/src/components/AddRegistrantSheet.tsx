@@ -113,7 +113,7 @@ export function AddRegistrantSheet({
           Add Registrant
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full max-w-2xl overflow-y-auto p-6">
+      <SheetContent className="overflow-y-auto p-4 md:max-w-[600px] lg:max-w-[800px]">
         <SheetHeader>
           <SheetTitle>Add New Registrant</SheetTitle>
           <SheetDescription>
