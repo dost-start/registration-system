@@ -44,8 +44,12 @@ export default function Login() {
       router.push('/');
 
     }
-    catch (error: any) {
-      console.error("Supabase ERROR: ", error.message);
+    catch (error: unknown) {
+      if (error instanceof Error)
+        console.error("Supabase ERROR: ", error.message);
+      else
+        console.error("Unexpected ERROR: ", error);
+
     }
   }
 
