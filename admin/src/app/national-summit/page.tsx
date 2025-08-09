@@ -67,7 +67,7 @@ export default function EventDashboard() {
         <Link href="/national-summit/manage">
           <Button className="flex items-center gap-2">
             <Users className="w-4 h-4" />
-            Manage Event
+            <span className="hidden md:inline">Manage Event</span>
           </Button>
         </Link>
       </AdminHeader>

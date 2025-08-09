@@ -122,7 +122,7 @@ export default function EventManagement() {
         title="Event Management"
         showBackButton
         backButtonHref="/national-summit"
-        backButtonText="Back"
+        backButtonText=""
       >
         <Button
           onClick={fetchData}
@@ -131,9 +131,9 @@ export default function EventManagement() {
           disabled={isLoading}
         >
           <RefreshCw
-            className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            className={`w-4 h-4 md:mr-2 ${isLoading ? "animate-spin" : ""}`}
           />
-          Refresh
+          <span className="hidden md:inline">Refresh</span>
         </Button>
         <Button
           onClick={handleExportCSV}
@@ -141,12 +141,19 @@ export default function EventManagement() {
           size="sm"
           disabled={registrants.length === 0}
         >
-          <Download className="w-4 h-4 mr-2" />
-          Export CSV
+          <Download className="w-4 h-4 md:mr-2" />
+          <span className="hidden md:inline">Export CSV</span>
         </Button>
       </AdminHeader>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Event Info Card */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>National Technovation Summit 2025</CardTitle>
+          </CardHeader>
+        </Card>
+
         {/* Quick Stats */}
         <div className="mb-8">
           <CompactStatsCards stats={stats} />
