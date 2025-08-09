@@ -58,7 +58,7 @@ export function AddRegistrantSheet({
       email: "",
       contact_number: "",
       facebook_profile: "",
-      region: "Region VII",
+      region: "NCR",
       university: "",
       course: "",
       is_dost_scholar: true,
@@ -388,7 +388,7 @@ export function AddRegistrantSheet({
               )}
             />
 
-            <SheetFooter>
+            <SheetFooter className="border-t">
               <Button
                 type="button"
                 variant="outline"

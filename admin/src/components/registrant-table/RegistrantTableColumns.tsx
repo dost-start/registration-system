@@ -90,12 +90,12 @@ function ActionCell({
             {registrant.is_checked_in ? (
               <>
                 <UserX className="w-4 h-4" />
-                <span>Check Out</span>
+                <span className="font-bold text-destructive">Check Out</span>
               </>
             ) : (
               <>
                 <UserCheck className="w-4 h-4" />
-                <span>Check In</span>
+                <span className="font-bold text-primary">Check In</span>
               </>
             )}
           </DropdownMenuItem>
