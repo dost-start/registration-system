@@ -4,12 +4,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import {
   CheckCircle,
   Clock,
+  Copy,
+  Eye,
   MoreHorizontal,
   Trash2,
   UserCheck,
   UserX,
   XCircle,
 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -19,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Badge } from "../ui/badge";
+import { RegistrantDetailsDialog } from "./RegistrantDetailsDialog";
 
 interface Props {
   isUpdating: number | null;
@@ -27,6 +31,150 @@ interface Props {
   toggleCheckIn: (registrant: FormEntry) => void;
   updateRegistrantStatus: (id: number, status: StatusType) => void;
   deleteRegistrant: (id: number) => void;
+}
+
+// Action Cell Component
+function ActionCell({
+  registrant,
+  isUpdating,
+  toggleCheckIn,
+  updateRegistrantStatus,
+  deleteRegistrant,
+}: {
+  registrant: FormEntry;
+  isUpdating: number | null;
+  toggleCheckIn: (registrant: FormEntry) => void;
+  updateRegistrantStatus: (id: number, status: StatusType) => void;
+  deleteRegistrant: (id: number) => void;
+}) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+          {/* View Information */}
+          <DropdownMenuItem
+            onClick={() => setIsDetailsOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Eye className="h-4 w-4" />
+            <span>View Information</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() =>
+              navigator.clipboard.writeText(registrant.email || "")
+            }
+            className="flex items-center gap-2"
+          >
+            <Copy className="h-4 w-4" />
+            <span>Copy email</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          {/* Check-in/Check-out Actions */}
+          <DropdownMenuItem
+            onClick={() => toggleCheckIn(registrant)}
+            className="flex items-center gap-2"
+          >
+            {registrant.is_checked_in ? (
+              <>
+                <UserX className="w-4 h-4" />
+                <span>Check Out</span>
+              </>
+            ) : (
+              <>
+                <UserCheck className="w-4 h-4" />
+                <span>Check In</span>
+              </>
+            )}
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          {/* Status Update Actions */}
+          <DropdownMenuLabel className="text-xs text-muted-foreground">
+            Update Status
+          </DropdownMenuLabel>
+
+          <DropdownMenuItem
+            onClick={() => updateRegistrantStatus(registrant.id, "accepted")}
+            disabled={
+              registrant.status === "accepted" || isUpdating === registrant.id
+            }
+            className="flex items-center gap-2"
+          >
+            <CheckCircle className="w-4 h-4 text-green-600" />
+            <span>Accept</span>
+            {registrant.status === "accepted" && (
+              <Badge variant="secondary" className="ml-auto text-xs">
+                Current
+              </Badge>
+            )}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => updateRegistrantStatus(registrant.id, "pending")}
+            disabled={
+              registrant.status === "pending" || isUpdating === registrant.id
+            }
+            className="flex items-center gap-2"
+          >
+            <Clock className="w-4 h-4 text-yellow-600" />
+            <span>Set Pending</span>
+            {registrant.status === "pending" && (
+              <Badge variant="secondary" className="ml-auto text-xs">
+                Current
+              </Badge>
+            )}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => updateRegistrantStatus(registrant.id, "rejected")}
+            disabled={
+              registrant.status === "rejected" || isUpdating === registrant.id
+            }
+            className="flex items-center gap-2"
+          >
+            <XCircle className="w-4 h-4 text-red-600" />
+            <span>Reject</span>
+            {registrant.status === "rejected" && (
+              <Badge variant="secondary" className="ml-auto text-xs">
+                Current
+              </Badge>
+            )}
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          {/* Delete Action */}
+          <DropdownMenuItem
+            onClick={() => deleteRegistrant(registrant.id)}
+            className="flex items-center gap-2 text-red-600 focus:text-red-600"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Delete</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <RegistrantDetailsDialog
+        registrant={registrant}
+        open={isDetailsOpen}
+        onOpenChange={setIsDetailsOpen}
+      />
+    </>
+  );
 }
 
 export default function RegistrantTableColumns({
@@ -125,89 +273,35 @@ export default function RegistrantTableColumns({
       },
     },
     {
+      accessorKey: "remarks",
+      header: "Remarks",
+      cell: ({ row }) => {
+        const remarks = row.getValue("remarks") as string | null;
+        return (
+          <div className="max-w-32">
+            {remarks ? (
+              truncateText(remarks, 20)
+            ) : (
+              <span className="text-muted-foreground italic">No remarks</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
         const registrant = row.original;
 
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigator.clipboard.writeText(registrant.email || "")
-                }
-              >
-                Copy email
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-
-              {/* Check-in/Check-out Actions */}
-              <DropdownMenuItem
-                onClick={() => toggleCheckIn(registrant)}
-                className={"flex items-center gap-2"}
-              >
-                {registrant.is_checked_in ? (
-                  <>
-                    <UserX className="w-4 h-4" />
-                    Check Out
-                  </>
-                ) : (
-                  <>
-                    <UserCheck className="w-4 h-4" />
-                    Check In
-                  </>
-                )}
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              {/* Status Update Actions */}
-              <DropdownMenuItem
-                onClick={() =>
-                  updateRegistrantStatus(registrant.id, "accepted")
-                }
-                className="flex items-center gap-2"
-              >
-                <CheckCircle className="w-4 h-4 text-green-600" />
-                Accept
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => updateRegistrantStatus(registrant.id, "pending")}
-                className="flex items-center gap-2"
-              >
-                <Clock className="w-4 h-4 text-yellow-600" />
-                Set Pending
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  updateRegistrantStatus(registrant.id, "rejected")
-                }
-                className="flex items-center gap-2"
-              >
-                <XCircle className="w-4 h-4 text-red-600" />
-                Reject
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              {/* Delete Action */}
-              <DropdownMenuItem
-                onClick={() => deleteRegistrant(registrant.id)}
-                className="flex items-center gap-2 text-red-600 focus:text-red-600"
-              >
-                <Trash2 className="w-4 h-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ActionCell
+            registrant={registrant}
+            isUpdating={isUpdating}
+            toggleCheckIn={toggleCheckIn}
+            updateRegistrantStatus={updateRegistrantStatus}
+            deleteRegistrant={deleteRegistrant}
+          />
         );
       },
     },
