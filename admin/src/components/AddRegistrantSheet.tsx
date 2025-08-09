@@ -110,7 +110,7 @@ export function AddRegistrantSheet({
       <SheetTrigger asChild>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
-          Add Registrant
+          <span className="hidden md:inline">Add Registrant</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-auto p-4 md:max-w-[600px] lg:max-w-[800px]">

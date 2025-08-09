@@ -53,7 +53,7 @@ export function AdminHeader({
                 className="h-8 w-auto cursor-pointer"
               />
             </Link>
-            <div>
+            <div className="hidden md:block">
               <h1
                 className={`${orbitron.variable} font-orbitron text-xl font-bold text-primary`}
               >
@@ -66,8 +66,8 @@ export function AdminHeader({
             {children}
             <form action={signOut}>
               <Button variant="outline" type="submit" size="sm">
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
+                <LogOut className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Sign Out</span>
               </Button>
             </form>
           </div>

@@ -1,27 +1,16 @@
-import { Calendar, Clock, MapPin, Users, Trophy } from "lucide-react";
+import { Calendar, Clock, MapPin, Trophy, Users } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { orbitron } from "@/lib/fonts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import bgImage from "../../public/bg-image.png";
 
 export function EventInfo() {
   return (
     <div className="mb-8">
       <Card className="overflow-hidden">
-        <div className="relative h-64 bg-gradient-to-r from-primary to-primary/80">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative z-10 flex items-center justify-center h-full text-white">
-            <div className="text-center">
-              <h1
-                className={`${orbitron.variable} font-orbitron text-4xl font-bold mb-2`}
-              >
-                National Technovation Summit 2025
-              </h1>
-              <p className="text-xl font-medium opacity-90">
-                Ignite, Connect, and Impact the Nation
-              </p>
-            </div>
-          </div>
+        <div className="relative bg-gradient-to-r from-primary to-primary/80">
+          <Image src={bgImage} alt="Background" objectFit="cover" />
         </div>
         <CardContent className="p-6">
           <div className="grid md:grid-cols-3 gap-6">
