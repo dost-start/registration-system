@@ -21,7 +21,7 @@ export default function EventDetails() {
             National Technovation Summit 2025
           </h1>
           <p className="text-xl sm:text-2xl text-summit-black/70 font-medium">
-            Ignite, Connect, and Impact the Nation
+            Imagine, Innovate, and Impact the Nation
           </p>
         </div>
 
