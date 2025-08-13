@@ -95,6 +95,14 @@ export default function EventDetails() {
                 <p className="text-base text-summit-black font-medium">
                   Cebu City
                 </p>
+                <div className="relative w-full h-0 pb-[56.25%] mt-4 rounded-xl overflow-hidden">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    loading="lazy"
+                    allowFullScreen
+                    src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=AIzaSyBDum0bCdRb6JHcjwxInsasR7XQDNE7MFg&zoom=16"
+                  ></iframe>
+                </div>
               </div>
             </div>
 
