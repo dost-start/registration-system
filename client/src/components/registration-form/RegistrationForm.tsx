@@ -177,6 +177,10 @@ export default function RegistrationForm() {
     }
   };
 
+  const watch = form.watch();
+
+  console.log(watch.region);
+
   return (
     <section
       id="registration-form"
@@ -410,19 +414,17 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostScholar"
               render={({ field }) => (
-                <FormItem>
-                  <div className="flex flex-row items-center space-x-2 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-summit-black font-medium">
-                        Is a current DOST Scholar? *
-                      </FormLabel>
-                    </div>
+                <FormItem className="flex flex-row items-center space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-summit-black font-medium">
+                      Is a current DOST Scholar? *
+                    </FormLabel>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -434,7 +436,7 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostStartMember"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <FormItem className="flex flex-row items-center space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
