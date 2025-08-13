@@ -100,7 +100,7 @@ export default function EventDetails() {
                     className="absolute top-0 left-0 w-full h-full"
                     loading="lazy"
                     allowFullScreen
-                    src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=AIzaSyBDum0bCdRb6JHcjwxInsasR7XQDNE7MFg&zoom=16"
+                    src={`https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&zoom=16`}
                   ></iframe>
                 </div>
               </div>
