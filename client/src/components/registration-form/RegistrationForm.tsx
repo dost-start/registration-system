@@ -182,10 +182,6 @@ export default function RegistrationForm() {
     }
   };
 
-  const watch = form.watch();
-
-  console.log(watch.region);
-
   return (
     <section
       id="registration-form"
