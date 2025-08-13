@@ -191,7 +191,7 @@ export default function RegistrationForm() {
       id="registration-form"
       className="bg-gradient-to-r from-summit-blue to-summit-teal py-16 px-4"
     >
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow border-summit-orange border-2">
         <h2
           id="registration-form-title"
           className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center"
