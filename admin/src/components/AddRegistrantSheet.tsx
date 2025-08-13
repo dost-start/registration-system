@@ -24,6 +24,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 import { FormEntryInsert, REGIONS_ARRAY } from "@/types/form-entries";
+import { Constants } from "@/types/supabase";
 import {
   Sheet,
   SheetContent,
@@ -61,7 +62,9 @@ export function AddRegistrantSheet({
       region: "NCR",
       university: "",
       course: "",
-      is_dost_scholar: true,
+      year_level: undefined,
+      year_awarded: undefined,
+      scholarship_type: "Merit",
       is_start_member: false,
       status: "pending",
       is_checked_in: false,
@@ -294,6 +297,88 @@ export function AddRegistrantSheet({
 
             <FormField
               control={form.control}
+              name="year_level"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Year Level</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="1st year">1st year</SelectItem>
+                      <SelectItem value="2nd year">2nd year</SelectItem>
+                      <SelectItem value="3rd year">3rd year</SelectItem>
+                      <SelectItem value="4th year">4th year</SelectItem>
+                      <SelectItem value="5th year">5th year</SelectItem>
+                      <SelectItem value="6th year">6th year</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="year_awarded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Year Awarded</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year awarded" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="2018">2018</SelectItem>
+                      <SelectItem value="2019">2019</SelectItem>
+                      <SelectItem value="2020">2020</SelectItem>
+                      <SelectItem value="2021">2021</SelectItem>
+                      <SelectItem value="2022">2022</SelectItem>
+                      <SelectItem value="2023">2023</SelectItem>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="scholarship_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Scholarship Type *</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Constants.public.Enums.scholarship_type.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="status"
               render={({ field }) => (
                 <FormItem>
@@ -319,24 +404,6 @@ export function AddRegistrantSheet({
             />
 
             <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="is_dost_scholar"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>DOST Scholar</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="is_start_member"

@@ -503,7 +503,7 @@ export default function RegistrationForm() {
               control={form.control}
               name="dostStartMember"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-y-0">
+                <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -539,8 +539,8 @@ export default function RegistrationForm() {
                         }
                       />
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
+                    <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
+                      <span>
                         I have read the{" "}
                         <a
                           href="/primer.pdf"
@@ -551,9 +551,9 @@ export default function RegistrationForm() {
                           event primer
                         </a>
                         . *
-                      </FormLabel>
-                      <FormMessage />
-                    </div>
+                      </span>
+                    </FormLabel>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -574,16 +574,18 @@ export default function RegistrationForm() {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
-                        I have read and agree to the{" "}
-                        <a
-                          href="/data-privacy-policy.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-summit-blue hover:text-summit-blue/80 underline font-semibold"
-                        >
-                          Data Privacy Policy
-                        </a>
-                        . *
+                        <span>
+                          I have read and agree to the{" "}
+                          <a
+                            href="/data-privacy-policy.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-summit-blue hover:text-summit-blue/80 underline font-semibold inline"
+                          >
+                            Data Privacy Policy
+                          </a>
+                          . *
+                        </span>
                       </FormLabel>
                       <FormMessage />
                     </div>

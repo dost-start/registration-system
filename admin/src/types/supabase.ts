@@ -4,120 +4,114 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)";
-  };
+    PostgrestVersion: "12.2.12 (cd3cf9e)"
+  }
   graphql_public: {
     Tables: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
       graphql: {
         Args: {
-          operationName?: string;
-          query?: string;
-          variables?: Json;
-          extensions?: Json;
-        };
-        Returns: Json;
-      };
-    };
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       form_entries: {
         Row: {
-          contact_number: string;
-          course: string;
-          created_at: string;
-          email: string | null;
-          facebook_profile: string | null;
-          first_name: string;
-          id: number;
-          is_checked_in: boolean;
-          is_dost_scholar: boolean;
-          is_start_member: boolean;
-          last_name: string;
-          middle_name: string | null;
-          region: Database["public"]["Enums"]["philippine_region"];
-          remarks: string | null;
-          scholarship_type:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null;
-          status: Database["public"]["Enums"]["status"];
-          suffix: string | null;
-          university: string;
-          year_awarded: string | null;
-        };
+          contact_number: string
+          course: string
+          created_at: string
+          email: string | null
+          facebook_profile: string | null
+          first_name: string
+          id: number
+          is_checked_in: boolean
+          is_start_member: boolean
+          last_name: string
+          middle_name: string | null
+          region: Database["public"]["Enums"]["philippine_region"]
+          remarks: string | null
+          scholarship_type: Database["public"]["Enums"]["scholarship_type"]
+          status: Database["public"]["Enums"]["status"]
+          suffix: string | null
+          university: string
+          year_awarded: string | null
+          year_level: string | null
+        }
         Insert: {
-          contact_number: string;
-          course: string;
-          created_at?: string;
-          email?: string | null;
-          facebook_profile?: string | null;
-          first_name?: string;
-          id?: number;
-          is_checked_in?: boolean;
-          is_dost_scholar?: boolean;
-          is_start_member?: boolean;
-          last_name?: string;
-          middle_name?: string | null;
-          region?: Database["public"]["Enums"]["philippine_region"];
-          remarks?: string | null;
-          scholarship_type?:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null;
-          status: Database["public"]["Enums"]["status"];
-          suffix?: string | null;
-          university: string;
-          year_awarded?: string | null;
-        };
+          contact_number: string
+          course: string
+          created_at?: string
+          email?: string | null
+          facebook_profile?: string | null
+          first_name?: string
+          id?: number
+          is_checked_in?: boolean
+          is_start_member?: boolean
+          last_name?: string
+          middle_name?: string | null
+          region?: Database["public"]["Enums"]["philippine_region"]
+          remarks?: string | null
+          scholarship_type: Database["public"]["Enums"]["scholarship_type"]
+          status: Database["public"]["Enums"]["status"]
+          suffix?: string | null
+          university: string
+          year_awarded?: string | null
+          year_level?: string | null
+        }
         Update: {
-          contact_number?: string;
-          course?: string;
-          created_at?: string;
-          email?: string | null;
-          facebook_profile?: string | null;
-          first_name?: string;
-          id?: number;
-          is_checked_in?: boolean;
-          is_dost_scholar?: boolean;
-          is_start_member?: boolean;
-          last_name?: string;
-          middle_name?: string | null;
-          region?: Database["public"]["Enums"]["philippine_region"];
-          remarks?: string | null;
-          scholarship_type?:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null;
-          status?: Database["public"]["Enums"]["status"];
-          suffix?: string | null;
-          university?: string;
-          year_awarded?: string | null;
-        };
-        Relationships: [];
-      };
-    };
+          contact_number?: string
+          course?: string
+          created_at?: string
+          email?: string | null
+          facebook_profile?: string | null
+          first_name?: string
+          id?: number
+          is_checked_in?: boolean
+          is_start_member?: boolean
+          last_name?: string
+          middle_name?: string | null
+          region?: Database["public"]["Enums"]["philippine_region"]
+          remarks?: string | null
+          scholarship_type?: Database["public"]["Enums"]["scholarship_type"]
+          status?: Database["public"]["Enums"]["status"]
+          suffix?: string | null
+          university?: string
+          year_awarded?: string | null
+          year_level?: string | null
+        }
+        Relationships: []
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Enums: {
       philippine_region:
         | "Region I"
@@ -137,135 +131,132 @@ export type Database = {
         | "NCR"
         | "CAR"
         | "BARMM"
-        | "NIR";
-      scholarship_type: "Merit" | "RA 7687" | "RA 10612" | "Bangon Marawi";
-      status: "pending" | "rejected" | "accepted";
-    };
+        | "NIR"
+      scholarship_type: "Merit" | "RA 7687" | "RA 10612" | "Bangon Marawi"
+      status: "pending" | "rejected" | "accepted"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<
-  keyof Database,
-  "public"
->];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-      DefaultSchema["Views"])
-  ? (DefaultSchema["Tables"] &
-      DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R;
-    }
-    ? R
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never;
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-      Insert: infer I;
-    }
-    ? I
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never;
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-      Update: infer U;
-    }
-    ? U
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never;
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-  : never;
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-  : never;
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
 export const Constants = {
   graphql_public: {
@@ -297,4 +288,4 @@ export const Constants = {
       status: ["pending", "rejected", "accepted"],
     },
   },
-} as const;
+} as const
