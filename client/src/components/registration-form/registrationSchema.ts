@@ -1,3 +1,9 @@
+import {
+  REGIONS_ARRAY,
+  YEAR_AWARDED_OPTIONS,
+  YEAR_LEVELS,
+} from "@/types/types";
+import { Constants } from "@/types/supabase";
 import { z } from "zod";
 
 export const registrationSchema = z.object({
@@ -21,14 +27,27 @@ export const registrationSchema = z.object({
     .url("Please enter a valid URL")
     .optional()
     .or(z.literal("")),
-  region: z.string().min(1, "Please select your region"),
+  region: z.enum(REGIONS_ARRAY, {
+    message: "Please select a valid region",
+  }),
   university: z.string().min(1, "University is required"),
   course: z.string().min(1, "Course is required"),
-  // DOST Scholar is required to be true
-  dostScholar: z.boolean().refine((val) => val === true, {
-    message: "You must be a current DOST Scholar to register",
+  yearLevel: z.enum(YEAR_LEVELS, {
+    message: "Please select a valid year level",
+  }),
+  yearAwarded: z.enum(YEAR_AWARDED_OPTIONS, {
+    message: "Please select the year you were awarded the scholarship",
+  }),
+  scholarshipType: z.enum(Constants.public.Enums.scholarship_type, {
+    message: "Please select a valid scholarship type",
   }),
   dostStartMember: z.boolean(),
+  hasReadPrimer: z.boolean().refine((val) => val === true, {
+    message: "You must read the event primer before registering",
+  }),
+  agreeToDataPrivacy: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the Data Privacy Policy to register",
+  }),
 });
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;

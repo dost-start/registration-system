@@ -49,19 +49,17 @@ export type Database = {
           first_name: string
           id: number
           is_checked_in: boolean
-          is_dost_scholar: boolean
           is_start_member: boolean
           last_name: string
           middle_name: string | null
           region: Database["public"]["Enums"]["philippine_region"]
           remarks: string | null
-          scholarship_type:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null
+          scholarship_type: Database["public"]["Enums"]["scholarship_type"]
           status: Database["public"]["Enums"]["status"]
           suffix: string | null
           university: string
           year_awarded: string | null
+          year_level: string | null
         }
         Insert: {
           contact_number: string
@@ -72,19 +70,17 @@ export type Database = {
           first_name?: string
           id?: number
           is_checked_in?: boolean
-          is_dost_scholar?: boolean
           is_start_member?: boolean
           last_name?: string
           middle_name?: string | null
           region?: Database["public"]["Enums"]["philippine_region"]
           remarks?: string | null
-          scholarship_type?:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null
+          scholarship_type: Database["public"]["Enums"]["scholarship_type"]
           status: Database["public"]["Enums"]["status"]
           suffix?: string | null
           university: string
           year_awarded?: string | null
+          year_level?: string | null
         }
         Update: {
           contact_number?: string
@@ -95,19 +91,17 @@ export type Database = {
           first_name?: string
           id?: number
           is_checked_in?: boolean
-          is_dost_scholar?: boolean
           is_start_member?: boolean
           last_name?: string
           middle_name?: string | null
           region?: Database["public"]["Enums"]["philippine_region"]
           remarks?: string | null
-          scholarship_type?:
-            | Database["public"]["Enums"]["scholarship_type"]
-            | null
+          scholarship_type?: Database["public"]["Enums"]["scholarship_type"]
           status?: Database["public"]["Enums"]["status"]
           suffix?: string | null
           university?: string
           year_awarded?: string | null
+          year_level?: string | null
         }
         Relationships: []
       }

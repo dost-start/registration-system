@@ -5,57 +5,9 @@ import {
   RegistrationFormData,
   registrationSchema,
 } from "@/components/registration-form/registrationSchema";
-import { TablesInsert, Database } from "@/types/supabase";
+import { Database, TablesInsert } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-
-type FormRegion =
-  | "ncr"
-  | "car"
-  | "region1"
-  | "region2"
-  | "region3"
-  | "region4a"
-  | "region4b"
-  | "region5"
-  | "region6"
-  | "region7"
-  | "region8"
-  | "region9"
-  | "region10"
-  | "region11"
-  | "region12"
-  | "region13"
-  | "barmm";
-
-function mapRegionToDbEnum(
-  formRegion: string
-): Database["public"]["Enums"]["philippine_region"] {
-  const regionMap: Record<
-    FormRegion,
-    Database["public"]["Enums"]["philippine_region"]
-  > = {
-    ncr: "NCR",
-    car: "CAR",
-    region1: "Region I",
-    region2: "Region II",
-    region3: "Region III",
-    region4a: "Region IV-A",
-    region4b: "Region IV-B",
-    region5: "Region V",
-    region6: "Region VI",
-    region7: "Region VII",
-    region8: "Region VIII",
-    region9: "Region IX",
-    region10: "Region X",
-    region11: "Region XI",
-    region12: "Region XII",
-    region13: "Region XIII",
-    barmm: "BARMM",
-  };
-
-  return regionMap[formRegion as FormRegion] || "NCR"; // Fallback to NCR if not found
-}
 
 export async function submitRegistration(data: RegistrationFormData) {
   try {
@@ -90,10 +42,12 @@ export async function submitRegistration(data: RegistrationFormData) {
       email: validatedData.email,
       contact_number: validatedData.contactNumber,
       facebook_profile: validatedData.facebookProfile || null,
-      region: mapRegionToDbEnum(validatedData.region),
+      region: validatedData.region,
       university: validatedData.university,
       course: validatedData.course,
-      is_dost_scholar: validatedData.dostScholar,
+      year_level: validatedData.yearLevel,
+      year_awarded: validatedData.yearAwarded,
+      scholarship_type: validatedData.scholarshipType,
       is_start_member: validatedData.dostStartMember,
       status: "pending", // Default status
       is_checked_in: false, // Default check-in status

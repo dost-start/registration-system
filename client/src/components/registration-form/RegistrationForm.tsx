@@ -1,8 +1,12 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { submitRegistration } from "@/app/actions/registration";
+import {
+  registrationSchema,
+  type RegistrationFormData,
+} from "@/components/registration-form/registrationSchema";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -12,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -21,14 +24,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import {
-  registrationSchema,
-  type RegistrationFormData,
-} from "@/components/registration-form/registrationSchema";
-import { submitRegistration } from "@/app/actions/registration";
-import { useState, useEffect } from "react";
-import { z } from "zod";
+import { Constants } from "@/types/supabase";
+import { YEAR_AWARDED_OPTIONS, YEAR_LEVELS } from "@/types/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type FormErrors = z.inferFormattedError<typeof registrationSchema>;
 type SubmitMessageType = {
@@ -38,7 +40,6 @@ type SubmitMessageType = {
   redirectUrl?: string;
 };
 type FormFieldName = keyof RegistrationFormData;
-import { Constants } from "@/types/supabase";
 
 export default function RegistrationForm() {
   const router = useRouter();
@@ -57,11 +58,15 @@ export default function RegistrationForm() {
       suffix: "",
       contactNumber: "",
       facebookProfile: "",
-      region: "",
+      region: undefined,
       university: "",
       course: "",
-      dostScholar: false,
+      yearLevel: undefined,
+      yearAwarded: undefined,
+      scholarshipType: undefined,
       dostStartMember: false,
+      hasReadPrimer: false,
+      agreeToDataPrivacy: false,
     },
     mode: "onBlur",
   });
@@ -409,23 +414,85 @@ export default function RegistrationForm() {
               )}
             />
 
-            {/* DOST Scholar */}
+            {/* Year Level */}
             <FormField
               control={form.control}
-              name="dostScholar"
+              name="yearLevel"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-summit-black font-medium">
-                      Is a current DOST Scholar? *
-                    </FormLabel>
-                  </div>
+                <FormItem>
+                  <FormLabel className="text-summit-black font-semibold">
+                    Year Level *
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {YEAR_LEVELS.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Scholarship Type */}
+            <FormField
+              control={form.control}
+              name="scholarshipType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-summit-black font-semibold">
+                    Scholarship Type *
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select scholarship type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Constants.public.Enums.scholarship_type.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Year Awarded */}
+            <FormField
+              control={form.control}
+              name="yearAwarded"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-summit-black font-semibold">
+                    Year Awarded *
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year awarded" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {YEAR_AWARDED_OPTIONS.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -451,6 +518,79 @@ export default function RegistrationForm() {
                 </FormItem>
               )}
             />
+
+            {/* Confirmation Checkboxes */}
+            <div className="space-y-4 border-t pt-6">
+              <h3 className="text-lg font-semibold text-summit-black">
+                Before you submit
+              </h3>
+
+              {/* Event Primer Confirmation */}
+              <FormField
+                control={form.control}
+                name="hasReadPrimer"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value || false}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked || false)
+                        }
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
+                        I have read the{" "}
+                        <a
+                          href="/primer.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-summit-blue hover:text-summit-blue/80 underline font-semibold"
+                        >
+                          event primer
+                        </a>
+                        . *
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Data Privacy Policy Confirmation */}
+              <FormField
+                control={form.control}
+                name="agreeToDataPrivacy"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value || false}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked || false)
+                        }
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
+                        I have read and agree to the{" "}
+                        <a
+                          href="/data-privacy-policy.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-summit-blue hover:text-summit-blue/80 underline font-semibold"
+                        >
+                          Data Privacy Policy
+                        </a>
+                        . *
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* In-Person Event Warning */}
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-4">
