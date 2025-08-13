@@ -1,4 +1,4 @@
-import { Database } from "@/types/supabase";
+import { Database } from "./supabase";
 
 export type FormEntry = Database["public"]["Tables"]["form_entries"]["Row"];
 export type FormEntryInsert =

@@ -55,9 +55,13 @@ export type Database = {
           middle_name: string | null
           region: Database["public"]["Enums"]["philippine_region"]
           remarks: string | null
+          scholarship_type:
+            | Database["public"]["Enums"]["scholarship_type"]
+            | null
           status: Database["public"]["Enums"]["status"]
           suffix: string | null
           university: string
+          year_awarded: string | null
         }
         Insert: {
           contact_number: string
@@ -74,9 +78,13 @@ export type Database = {
           middle_name?: string | null
           region?: Database["public"]["Enums"]["philippine_region"]
           remarks?: string | null
+          scholarship_type?:
+            | Database["public"]["Enums"]["scholarship_type"]
+            | null
           status: Database["public"]["Enums"]["status"]
           suffix?: string | null
           university: string
+          year_awarded?: string | null
         }
         Update: {
           contact_number?: string
@@ -93,9 +101,13 @@ export type Database = {
           middle_name?: string | null
           region?: Database["public"]["Enums"]["philippine_region"]
           remarks?: string | null
+          scholarship_type?:
+            | Database["public"]["Enums"]["scholarship_type"]
+            | null
           status?: Database["public"]["Enums"]["status"]
           suffix?: string | null
           university?: string
+          year_awarded?: string | null
         }
         Relationships: []
       }
@@ -126,6 +138,7 @@ export type Database = {
         | "CAR"
         | "BARMM"
         | "NIR"
+      scholarship_type: "Merit" | "RA 7687" | "RA 10612" | "Bangon Marawi"
       status: "pending" | "rejected" | "accepted"
     }
     CompositeTypes: {
@@ -277,6 +290,7 @@ export const Constants = {
         "BARMM",
         "NIR",
       ],
+      scholarship_type: ["Merit", "RA 7687", "RA 10612", "Bangon Marawi"],
       status: ["pending", "rejected", "accepted"],
     },
   },
