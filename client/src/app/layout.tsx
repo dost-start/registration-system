@@ -23,7 +23,7 @@ const monument = localFont({
 export const metadata: Metadata = {
   title: "National Technovation Summit 2025 | DOST START",
   description:
-    "A 1-day summit to ignite innovation, connect sectors, and recognize impactful projects. Featuring TechTalks, networking sessions, and innovation booths. Exclusive for DOST scholars.",
+    "A 1-day event that aims to bring together DOST-SEI scholars, industry experts, and thought leaders to inspire a collective vision of progress and innovation in the country.",
   keywords: [
     "technovation",
     "innovation",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "National Technovation Summit 2025",
     description:
-      "Join us for a day of innovation, networking, and recognition of impactful tech projects.",
+      "A 1-day event that aims to bring together DOST-SEI scholars, industry experts, and thought leaders to inspire a collective vision of progress and innovation in the country.",
     type: "website",
     locale: "en_US",
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "National Technovation Summit 2025",
     description:
-      "A 1-day summit to ignite innovation, connect sectors, and recognize impactful projects.",
+      "A 1-day event that aims to bring together DOST-SEI scholars, industry experts, and thought leaders to inspire a collective vision of progress and innovation in the country.",
     images: ["/og-image.png"],
   },
   robots: {

@@ -114,17 +114,25 @@ export function RegistrantDetailsDialog({
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  DOST Scholar
+                  Year Level
                 </label>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      registrant.is_dost_scholar ? "default" : "secondary"
-                    }
-                  >
-                    {registrant.is_dost_scholar ? "Yes" : "No"}
-                  </Badge>
-                </div>
+                <p className="text-sm">
+                  {registrant.year_level || "Not specified"}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Year Awarded
+                </label>
+                <p className="text-sm">
+                  {registrant.year_awarded || "Not specified"}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Scholarship Type
+                </label>
+                <p className="text-sm">{registrant.scholarship_type}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">

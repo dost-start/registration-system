@@ -5,6 +5,7 @@ import {
   CheckCircle,
   Clock,
   Copy,
+  Edit,
   Eye,
   MoreHorizontal,
   Trash2,
@@ -24,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { RegistrantDetailsDialog } from "./RegistrantDetailsDialog";
+import { EditRemarksDialog } from "./EditRemarksDialog";
 
 interface Props {
   isUpdating: number | null;
@@ -40,17 +42,42 @@ function ActionCell({
   toggleCheckIn,
   updateRegistrantStatus,
   deleteRegistrant,
+  onDataChange,
 }: {
   registrant: FormEntry;
   isUpdating: number | null;
   toggleCheckIn: (registrant: FormEntry) => void;
   updateRegistrantStatus: (id: number, status: StatusType) => void;
   deleteRegistrant: (id: number) => void;
+  onDataChange: () => void;
 }) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isEditRemarksOpen, setIsEditRemarksOpen] = useState(false);
 
   return (
-    <>
+    <div className="flex items-center gap-2">
+      {/* Check-in/Check-out Actions */}
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleCheckIn(registrant);
+        }}
+        className="flex items-center gap-2"
+        variant={"outline"}
+        disabled={isUpdating === registrant.id}
+      >
+        {registrant.is_checked_in ? (
+          <>
+            <UserX className="w-4 h-4" />
+            <span className="font-bold text-destructive">Check Out</span>
+          </>
+        ) : (
+          <>
+            <UserCheck className="w-4 h-4" />
+            <span className="font-bold text-primary">Check In</span>
+          </>
+        )}
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -80,25 +107,15 @@ function ActionCell({
             <span>Copy email</span>
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
-
-          {/* Check-in/Check-out Actions */}
           <DropdownMenuItem
-            onClick={() => toggleCheckIn(registrant)}
+            onClick={() => setIsEditRemarksOpen(true)}
             className="flex items-center gap-2"
           >
-            {registrant.is_checked_in ? (
-              <>
-                <UserX className="w-4 h-4" />
-                <span className="font-bold text-destructive">Check Out</span>
-              </>
-            ) : (
-              <>
-                <UserCheck className="w-4 h-4" />
-                <span className="font-bold text-primary">Check In</span>
-              </>
-            )}
+            <Edit className="h-4 w-4" />
+            <span>Edit Remarks</span>
           </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
 
           <DropdownMenuSeparator />
 
@@ -173,12 +190,20 @@ function ActionCell({
         open={isDetailsOpen}
         onOpenChange={setIsDetailsOpen}
       />
-    </>
+
+      <EditRemarksDialog
+        registrant={registrant}
+        open={isEditRemarksOpen}
+        onOpenChange={setIsEditRemarksOpen}
+        onSuccess={onDataChange}
+      />
+    </div>
   );
 }
 
 export default function RegistrantTableColumns({
   isUpdating,
+  onDataChange,
   toggleCheckIn,
   updateRegistrantStatus,
   deleteRegistrant,
@@ -187,6 +212,19 @@ export default function RegistrantTableColumns({
     {
       accessorKey: "first_name",
       header: "Name",
+      filterFn: (row, _columnId, filterValue) => {
+        const firstName = row.original.first_name || "";
+        const middleName = row.original.middle_name || "";
+        const lastName = row.original.last_name || "";
+        const suffix = row.original.suffix || "";
+
+        const fullName = [firstName, middleName, lastName, suffix]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return fullName.includes(filterValue.toLowerCase());
+      },
       cell: ({ row }) => {
         const firstName = row.getValue("first_name") as string;
         const lastName = row.original.last_name;
@@ -237,17 +275,12 @@ export default function RegistrantTableColumns({
       header: "Status",
       cell: ({ row }) => {
         const status = row.getValue("status") as StatusType;
-        const registrant = row.original;
-        const isLoading = isUpdating === registrant.id;
 
         return (
           <div className="flex items-center space-x-2">
             <Badge variant={getStatusBadgeVariant(status)}>
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </Badge>
-            {isLoading && (
-              <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
-            )}
           </div>
         );
       },
@@ -257,17 +290,12 @@ export default function RegistrantTableColumns({
       header: "Check-in",
       cell: ({ row }) => {
         const isCheckedIn = row.getValue("is_checked_in") as boolean;
-        const registrant = row.original;
-        const isLoading = isUpdating === registrant.id;
 
         return (
           <div className="flex items-center space-x-2">
             <Badge variant={isCheckedIn ? "default" : "secondary"}>
               {isCheckedIn ? "Checked In" : "Not Checked In"}
             </Badge>
-            {isLoading && (
-              <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
-            )}
           </div>
         );
       },
@@ -301,6 +329,7 @@ export default function RegistrantTableColumns({
             toggleCheckIn={toggleCheckIn}
             updateRegistrantStatus={updateRegistrantStatus}
             deleteRegistrant={deleteRegistrant}
+            onDataChange={onDataChange}
           />
         );
       },

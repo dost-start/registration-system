@@ -21,7 +21,7 @@ export default function EventDetails() {
             National Technovation Summit 2025
           </h1>
           <p className="text-xl sm:text-2xl text-summit-black/70 font-medium">
-            Ignite, Connect, and Impact the Nation
+            Imagine, Innovate, and Impact the Nation
           </p>
         </div>
 
@@ -95,6 +95,14 @@ export default function EventDetails() {
                 <p className="text-base text-summit-black font-medium">
                   Cebu City
                 </p>
+                <div className="relative w-full h-0 pb-[56.25%] mt-4 rounded-xl overflow-hidden">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&zoom=16`}
+                  ></iframe>
+                </div>
               </div>
             </div>
 
@@ -108,7 +116,7 @@ export default function EventDetails() {
               </div>
               <div className="ml-13 space-y-3">
                 <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-summit-pink/20 text-summit-black border border-summit-pink/20 hover:bg-summit-pink/30 transition-colors duration-200">
-                  DOST Scholars Only
+                  All Undergraduate DOST Scholars
                 </span>
               </div>
             </div>
@@ -128,8 +136,9 @@ export default function EventDetails() {
               </div>
               <div className="space-y-4 text-summit-black/80 ml-13">
                 <p className="text-base leading-relaxed text-summit-black">
-                  A 1-day summit to ignite innovation, connect sectors, and
-                  recognize impactful projects from the hackathon.
+                  A 1-day event that aims to bring together DOST-SEI scholars,
+                  industry experts, and thought leaders to inspire a collective
+                  vision of progress and innovation in the country.
                 </p>
                 <div className="mt-6">
                   <h4 className="font-semibold text-summit-black mb-4">

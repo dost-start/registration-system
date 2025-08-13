@@ -73,10 +73,9 @@ export function EventDescription() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            A 1-day summit designed to ignite innovation, connect sectors, and
-            recognize impactful projects. This event brings together DOST
-            scholars from across the Philippines to showcase technological
-            innovations and foster collaboration.
+            A 1-day event that aims to bring together DOST-SEI scholars,
+            industry experts, and thought leaders to inspire a collective vision
+            of progress and innovation in the country.
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="flex items-center gap-2">

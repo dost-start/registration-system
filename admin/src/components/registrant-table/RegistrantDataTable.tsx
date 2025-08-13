@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
 import {
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  RowSelectionState,
   SortingState,
-  getFilteredRowModel,
-  ColumnFiltersState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -23,22 +31,38 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  handleStatusUpdate,
+  handleBatchCheckIn,
   handleCheckInToggle,
   handleRegistrantDelete,
+  handleStatusUpdate,
 } from "@/lib/table-actions";
 import type { FormEntry, StatusType } from "@/types/form-entries";
-import RegistrantTableColumns from "@/components/registrant-table/RegistrantTableColumns";
+import { UserCheck, UserX } from "lucide-react";
+import RegistrantTableColumns from "./RegistrantTableColumns";
 
 interface DataTableProps {
   data: FormEntry[];
   onDataChange: () => void;
 }
 
+const searchableColumns = [
+  { key: "first_name", label: "Name" },
+  { key: "email", label: "Email" },
+  { key: "contact_number", label: "Contact" },
+  { key: "university", label: "University" },
+  { key: "region", label: "Region" },
+  { key: "course", label: "Course" },
+  { key: "scholarship_type", label: "Scholarship Type" },
+] as const;
+
 export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isUpdating, setIsUpdating] = useState<number | null>(null);
+  const [isBatchUpdating, setIsBatchUpdating] = useState(false);
+  const [searchColumn, setSearchColumn] = useState<string>("first_name");
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const updateRegistrantStatus = async (id: number, newStatus: StatusType) => {
     try {
@@ -62,6 +86,26 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
       console.error("Failed to toggle check-in:", error);
     } finally {
       setIsUpdating(null);
+    }
+  };
+
+  const batchCheckIn = async (isCheckedIn: boolean) => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    const selectedIds = selectedRows.map((row) => row.original.id);
+
+    if (selectedIds.length === 0) {
+      alert("Please select registrants to check in/out");
+      return;
+    }
+
+    try {
+      setIsBatchUpdating(true);
+      await handleBatchCheckIn(selectedIds, isCheckedIn, onDataChange);
+      setRowSelection({});
+    } catch (error) {
+      console.error("Failed to batch update check-in:", error);
+    } finally {
+      setIsBatchUpdating(false);
     }
   };
 
@@ -97,29 +141,94 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    enableRowSelection: true,
     state: {
       sorting,
       columnFilters,
+      rowSelection,
     },
   });
 
+  // Update search filter when search column or value changes
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+
+    if (searchColumn === "first_name") {
+      // Custom filter for name that includes first_name, middle_name, and last_name
+      table.getColumn("first_name")?.setFilterValue(value);
+    } else {
+      table.getColumn(searchColumn)?.setFilterValue(value);
+    }
+  };
+
+  const handleSearchColumnChange = (column: string) => {
+    // Clear previous filter
+    table.getColumn(searchColumn)?.setFilterValue("");
+    setSearchColumn(column);
+    setSearchValue("");
+  };
+
+  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter by name..."
-          value={
-            (table.getColumn("first_name")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("first_name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between py-4">
+        <div className="flex items-center space-x-2">
+          <Select value={searchColumn} onValueChange={handleSearchColumnChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Search by..." />
+            </SelectTrigger>
+            <SelectContent>
+              {searchableColumns.map((column) => (
+                <SelectItem key={column.key} value={column.key}>
+                  {column.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input
+            placeholder={`Filter by ${searchableColumns
+              .find((c) => c.key === searchColumn)
+              ?.label.toLowerCase()}...`}
+            value={searchValue}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+
+        {/* Batch actions */}
+        {selectedCount > 0 && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-muted-foreground">
+              {selectedCount} selected
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => batchCheckIn(true)}
+              disabled={isBatchUpdating}
+              className="h-8"
+            >
+              <UserCheck className="w-4 h-4 mr-1" />
+              Check In All
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => batchCheckIn(false)}
+              disabled={isBatchUpdating}
+              className="h-8"
+            >
+              <UserX className="w-4 h-4 mr-1" />
+              Check Out All
+            </Button>
+          </div>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>
