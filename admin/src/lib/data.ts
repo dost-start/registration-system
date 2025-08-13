@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import type {
   FormEntry,
+  FormEntryUpdate,
   RegistrantStats,
   StatusType,
 } from "@/types/form-entries";
@@ -93,6 +94,44 @@ export async function toggleRegistrantCheckIn(
 
   if (error) {
     throw new Error(`Failed to update check-in status: ${error.message}`);
+  }
+}
+
+/**
+ * Update registrant information
+ */
+export async function updateRegistrantInfo(
+  id: number,
+  updates: FormEntryUpdate
+): Promise<void> {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("form_entries")
+    .update(updates)
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(`Failed to update registrant info: ${error.message}`);
+  }
+}
+
+/**
+ * Batch update check-in status for multiple registrants
+ */
+export async function batchUpdateCheckIn(
+  ids: number[],
+  isCheckedIn: boolean
+): Promise<void> {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("form_entries")
+    .update({ is_checked_in: isCheckedIn })
+    .in("id", ids);
+
+  if (error) {
+    throw new Error(`Failed to batch update check-in status: ${error.message}`);
   }
 }
 

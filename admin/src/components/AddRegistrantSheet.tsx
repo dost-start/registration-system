@@ -6,6 +6,7 @@ import * as z from "zod";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -35,6 +36,7 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { addRegistrantSchema } from "@/schemas/addRegistrantSchema";
+import { YEAR_AWARDED_OPTIONS, YEAR_LEVELS } from "@/types/types";
 
 type AddRegistrantFormData = z.infer<typeof addRegistrantSchema>;
 
@@ -59,12 +61,12 @@ export function AddRegistrantSheet({
       email: "",
       contact_number: "",
       facebook_profile: "",
-      region: "NCR",
+      region: undefined,
       university: "",
       course: "",
       year_level: undefined,
       year_awarded: undefined,
-      scholarship_type: "Merit",
+      scholarship_type: undefined,
       is_start_member: false,
       status: "pending",
       is_checked_in: false,
@@ -78,6 +80,22 @@ export function AddRegistrantSheet({
       setError(null);
 
       const supabase = createClient();
+
+      // Check if email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from("form_entries")
+        .select("email")
+        .eq("email", data.email)
+        .single();
+
+      if (checkError && checkError.code !== "PGRST116") {
+        // PGRST116 is "not found" error, which is what we want
+        throw checkError;
+      }
+
+      if (existingUser) {
+        throw new Error("A registrant with this email address already exists");
+      }
 
       // Convert form data to match FormEntryInsert type
       const insertData: FormEntryInsert = {
@@ -98,7 +116,25 @@ export function AddRegistrantSheet({
       }
 
       setOpen(false);
-      form.reset();
+      form.reset({
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        suffix: "",
+        email: "",
+        contact_number: "",
+        facebook_profile: "",
+        region: undefined,
+        university: "",
+        course: "",
+        year_level: undefined,
+        year_awarded: undefined,
+        scholarship_type: undefined,
+        is_start_member: false,
+        status: "pending",
+        is_checked_in: false,
+        remarks: "",
+      });
       onRegistrantAdded();
     } catch (err) {
       console.error("Error adding registrant:", err);
@@ -200,7 +236,7 @@ export function AddRegistrantSheet({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email *</FormLabel>
                   <FormControl>
                     <Input {...field} type="email" disabled={isLoading} />
                   </FormControl>
@@ -228,9 +264,13 @@ export function AddRegistrantSheet({
               name="facebook_profile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Facebook Profile</FormLabel>
+                  <FormLabel>Facebook Profile (URL)</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isLoading} />
+                    <Input
+                      {...field}
+                      disabled={isLoading}
+                      placeholder="https://facebook.com/..."
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -244,13 +284,10 @@ export function AddRegistrantSheet({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Region *</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue placeholder="Select region" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -308,12 +345,11 @@ export function AddRegistrantSheet({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="1st year">1st year</SelectItem>
-                      <SelectItem value="2nd year">2nd year</SelectItem>
-                      <SelectItem value="3rd year">3rd year</SelectItem>
-                      <SelectItem value="4th year">4th year</SelectItem>
-                      <SelectItem value="5th year">5th year</SelectItem>
-                      <SelectItem value="6th year">6th year</SelectItem>
+                      {YEAR_LEVELS.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -334,14 +370,11 @@ export function AddRegistrantSheet({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="2018">2018</SelectItem>
-                      <SelectItem value="2019">2019</SelectItem>
-                      <SelectItem value="2020">2020</SelectItem>
-                      <SelectItem value="2021">2021</SelectItem>
-                      <SelectItem value="2022">2022</SelectItem>
-                      <SelectItem value="2023">2023</SelectItem>
-                      <SelectItem value="2024">2024</SelectItem>
-                      <SelectItem value="2025">2025</SelectItem>
+                      {YEAR_AWARDED_OPTIONS.map((year) => (
+                        <SelectItem key={year} value={year}>
+                          {year}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -355,13 +388,10 @@ export function AddRegistrantSheet({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Scholarship Type *</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Select scholarship type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -383,10 +413,7 @@ export function AddRegistrantSheet({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -448,23 +475,33 @@ export function AddRegistrantSheet({
                 <FormItem>
                   <FormLabel>Remarks</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isLoading} />
+                    <Textarea
+                      {...field}
+                      disabled={isLoading}
+                      placeholder="Enter remarks..."
+                      maxLength={300}
+                      rows={4}
+                    />
                   </FormControl>
+                  <div className="text-xs text-muted-foreground">
+                    {(field.value || "").length}/300 characters
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <SheetFooter className="border-t">
+            <SheetFooter className="border-t flex flex-row justify-between">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
                 disabled={isLoading}
+                className="w-full"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? "Adding..." : "Add Registrant"}
               </Button>
             </SheetFooter>
