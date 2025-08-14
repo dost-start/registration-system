@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   CalendarIcon,
@@ -57,75 +55,11 @@ export default function EventDetails() {
         </div>
 
         {/* Event Details Grid */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-12">
-          {/* Left Column - Event Info */}
-          <div className="space-y-8">
-            {/* Date & Time */}
-            <div className="bg-summit-blue/10 rounded-xl p-6 shadow-lg border border-summit-blue hover:shadow-xl transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <CalendarIcon />
-                <h3 className="text-xl font-semibold text-summit-black ml-3">
-                  Date & Time
-                </h3>
-              </div>
-              <div className="ml-13">
-                <p className="text-lg text-summit-black font-semibold">
-                  August 31, 2025
-                </p>
-                <div className="flex items-center">
-                  <p className="text-base text-summit-black font-medium">
-                    8:00 AM - 8:00 PM
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="bg-summit-teal/10 rounded-xl p-6 shadow-lg border border-summit-teal hover:shadow-xl transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <LocationIcon />
-                <h3 className="text-xl font-semibold text-summit-black ml-3">
-                  Location
-                </h3>
-              </div>
-              <div className="ml-13">
-                <p className="text-lg text-summit-black font-semibold mb-1">
-                  Marco Polo Plaza,
-                </p>
-                <p className="text-base text-summit-black font-medium">
-                  Cebu City
-                </p>
-                <div className="relative w-full h-0 pb-[56.25%] mt-4 rounded-xl overflow-hidden">
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    loading="lazy"
-                    allowFullScreen
-                    src={`https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&zoom=16`}
-                  ></iframe>
-                </div>
-              </div>
-            </div>
-
-            {/* Who Can Join */}
-            <div className="bg-summit-pink/10 rounded-xl p-6 shadow-lg border border-summit-pink hover:shadow-xl transition-shadow duration-300">
-              <div className="flex items-center mb-4">
-                <UsersIcon />
-                <h3 className="text-xl font-semibold text-summit-black ml-3">
-                  Who Can Register
-                </h3>
-              </div>
-              <div className="ml-13 space-y-3">
-                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-summit-pink/20 text-summit-black border border-summit-pink/20 hover:bg-summit-pink/30 transition-colors duration-200">
-                  All Undergraduate DOST Scholars
-                </span>
-              </div>
-            </div>
-          </div>
-
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-12 md:items-start">
           {/* Right Column - About */}
-          <div className="space-y-8">
+          <div className="space-y-6 flex flex-col h-full">
             {/* About the Event */}
-            <div className="bg-summit-orange/10 rounded-xl p-6 shadow-lg border border-summit-orange h-full hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-summit-orange/10 rounded-xl p-6 shadow-lg border border-summit-orange hover:shadow-xl transition-shadow duration-300 flex-1">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-summit-orange/10 rounded-lg flex items-center justify-center">
                   <div className="w-2 h-2 bg-summit-orange rounded-full"></div>
@@ -134,7 +68,7 @@ export default function EventDetails() {
                   Overview
                 </h3>
               </div>
-              <div className="space-y-4 text-summit-black/80 ml-13">
+              <div className="space-y-4 text-summit-black/80 ml-12">
                 <p className="text-base leading-relaxed text-summit-black">
                   A 1-day event that aims to bring together DOST-SEI scholars,
                   industry experts, and thought leaders to inspire a collective
@@ -162,6 +96,70 @@ export default function EventDetails() {
                       </span>
                     </li>
                   </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Who Can Join */}
+            <div className="bg-summit-pink/10 rounded-xl p-6 shadow-lg border border-summit-pink hover:shadow-xl transition-shadow duration-300">
+              <div className="flex items-center mb-4">
+                <UsersIcon />
+                <h3 className="text-xl font-semibold text-summit-black ml-3">
+                  Who Can Register
+                </h3>
+              </div>
+              <div className="ml-12 space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-summit-pink/20 text-summit-black border border-summit-pink/20 hover:bg-summit-pink/30 transition-colors duration-200">
+                    All Undergraduate DOST Scholars
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Left Column - Event Info */}
+          <div className="space-y-6 flex flex-col h-full">
+            {/* Date & Time */}
+            <div className="bg-summit-blue/10 rounded-xl p-6 shadow-lg border border-summit-blue hover:shadow-xl transition-shadow duration-300">
+              <div className="flex items-center mb-4">
+                <CalendarIcon />
+                <h3 className="text-xl font-semibold text-summit-black ml-3">
+                  Date & Time
+                </h3>
+              </div>
+              <div className="ml-12">
+                <p className="text-lg text-summit-black font-semibold">
+                  August 31, 2025
+                </p>
+                <p className="text-base text-summit-black font-medium">
+                  8:00 AM - 8:00 PM
+                </p>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="bg-summit-teal/10 rounded-xl p-6 shadow-lg border border-summit-teal hover:shadow-xl transition-shadow duration-300 flex-1">
+              <div className="flex items-center mb-4">
+                <LocationIcon />
+                <h3 className="text-xl font-semibold text-summit-black ml-3">
+                  Location
+                </h3>
+              </div>
+              <div className="ml-12 flex flex-col">
+                <p className="text-lg text-summit-black font-semibold mb-1">
+                  Marco Polo Plaza
+                </p>
+                <p className="text-base text-summit-black font-medium mb-4">
+                  Cebu City
+                </p>
+                <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-sm border border-summit-blue">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://www.google.com/maps/embed/v1/place?q=place_id:ChIJX_qEFtqYqTMRXLB5YKVbEYQ&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&zoom=16`}
+                  ></iframe>
                 </div>
               </div>
             </div>

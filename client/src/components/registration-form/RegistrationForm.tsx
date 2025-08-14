@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DataPrivacyDialog from "@/components/DataPrivacyDialog";
 
 type FormErrors = z.inferFormattedError<typeof registrationSchema>;
 type SubmitMessageType = {
@@ -182,16 +183,12 @@ export default function RegistrationForm() {
     }
   };
 
-  const watch = form.watch();
-
-  console.log(watch.region);
-
   return (
     <section
       id="registration-form"
       className="bg-gradient-to-r from-summit-blue to-summit-teal py-16 px-4"
     >
-      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+      <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow border-summit-orange border-2">
         <h2
           id="registration-form-title"
           className="text-3xl sm:text-4xl font-bold text-summit-black mb-8 text-center"
@@ -576,14 +573,16 @@ export default function RegistrationForm() {
                       <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
                         <span>
                           I have read and agree to the{" "}
-                          <a
-                            href="/data-privacy-policy.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-summit-blue hover:text-summit-blue/80 underline font-semibold inline"
+                          <DataPrivacyDialog
+                            onAgree={() => field.onChange(true)}
                           >
-                            Data Privacy Policy
-                          </a>
+                            <button
+                              type="button"
+                              className="text-summit-blue hover:text-summit-blue/80 underline font-semibold inline"
+                            >
+                              Data Privacy Policy
+                            </button>
+                          </DataPrivacyDialog>
                           . *
                         </span>
                       </FormLabel>

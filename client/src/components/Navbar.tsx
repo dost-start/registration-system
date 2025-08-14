@@ -20,7 +20,7 @@ export default function Navbar() {
           </div>
           <div className="flex items-center space-x-4">
             <Link href="#status-check">
-              <Button variant="outlinePrimary" className="px-4">
+              <Button variant="outlinePrimary" className="px-4 font-bold">
                 <span className="hidden sm:inline">
                   Check Registration Status
                 </span>
