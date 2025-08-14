@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DataPrivacyDialog from "@/components/DataPrivacyDialog";
 
 type FormErrors = z.inferFormattedError<typeof registrationSchema>;
 type SubmitMessageType = {
@@ -572,14 +573,16 @@ export default function RegistrationForm() {
                       <FormLabel className="text-summit-black font-medium text-sm leading-relaxed">
                         <span>
                           I have read and agree to the{" "}
-                          <a
-                            href="/data-privacy-policy.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-summit-blue hover:text-summit-blue/80 underline font-semibold inline"
+                          <DataPrivacyDialog
+                            onAgree={() => field.onChange(true)}
                           >
-                            Data Privacy Policy
-                          </a>
+                            <button
+                              type="button"
+                              className="text-summit-blue hover:text-summit-blue/80 underline font-semibold inline"
+                            >
+                              Data Privacy Policy
+                            </button>
+                          </DataPrivacyDialog>
                           . *
                         </span>
                       </FormLabel>

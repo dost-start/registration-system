@@ -153,7 +153,7 @@ export default function EventDetails() {
                 <p className="text-base text-summit-black font-medium mb-4">
                   Cebu City
                 </p>
-                <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-sm">
+                <div className="relative w-full h-64 rounded-lg overflow-hidden shadow-sm border border-summit-blue">
                   <iframe
                     className="absolute top-0 left-0 w-full h-full"
                     loading="lazy"
