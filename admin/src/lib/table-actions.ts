@@ -2,6 +2,8 @@ import {
   updateRegistrantStatus,
   toggleRegistrantCheckIn,
   deleteRegistrant,
+  updateRegistrantInfo,
+  batchUpdateCheckIn,
 } from "@/lib/data";
 import type { FormEntry, StatusType } from "@/types/form-entries";
 
@@ -35,6 +37,40 @@ export async function handleCheckInToggle(
     onSuccess();
   } catch (error) {
     console.error("Error toggling check-in:", error);
+    throw error;
+  }
+}
+
+/**
+ * Handle batch check-in/checkout
+ */
+export async function handleBatchCheckIn(
+  registrantIds: number[],
+  isCheckedIn: boolean,
+  onSuccess: () => void
+): Promise<void> {
+  try {
+    await batchUpdateCheckIn(registrantIds, isCheckedIn);
+    onSuccess();
+  } catch (error) {
+    console.error("Error batch updating check-in:", error);
+    throw error;
+  }
+}
+
+/**
+ * Handle updating registrant information
+ */
+export async function handleRegistrantInfoUpdate(
+  registrantId: number,
+  updates: { remarks: string | null },
+  onSuccess: () => void
+): Promise<void> {
+  try {
+    await updateRegistrantInfo(registrantId, updates);
+    onSuccess();
+  } catch (error) {
+    console.error("Error updating registrant info:", error);
     throw error;
   }
 }
