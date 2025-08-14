@@ -212,6 +212,8 @@ export default function RegistrantTableColumns({
     {
       accessorKey: "first_name",
       header: "Name",
+      size: 150,
+      minSize: 150,
       filterFn: (row, _columnId, filterValue) => {
         const firstName = row.original.first_name || "";
         const middleName = row.original.middle_name || "";
@@ -235,7 +237,11 @@ export default function RegistrantTableColumns({
           .filter(Boolean)
           .join(" ");
 
-        return <div className="font-medium">{truncateText(fullName, 25)}</div>;
+        return (
+          <div className="font-medium min-w-[150px]">
+            {truncateText(fullName, 25)}
+          </div>
+        );
       },
     },
     {
@@ -268,6 +274,22 @@ export default function RegistrantTableColumns({
       cell: ({ row }) => {
         const region = row.getValue("region") as string;
         return <div>{region}</div>;
+      },
+    },
+    {
+      accessorKey: "course",
+      header: "Course",
+      cell: ({ row }) => {
+        const course = row.getValue("course") as string;
+        return <div>{truncateText(course, 20)}</div>;
+      },
+    },
+    {
+      accessorKey: "scholarship_type",
+      header: "Scholarship Type",
+      cell: ({ row }) => {
+        const scholarshipType = row.getValue("scholarship_type") as string;
+        return <div>{truncateText(scholarshipType, 15)}</div>;
       },
     },
     {
@@ -318,6 +340,7 @@ export default function RegistrantTableColumns({
     },
     {
       id: "actions",
+      header: "Actions",
       enableHiding: false,
       cell: ({ row }) => {
         const registrant = row.original;
