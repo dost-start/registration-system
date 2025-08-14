@@ -10,11 +10,18 @@ import {
   RowSelectionState,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -37,7 +44,7 @@ import {
   handleStatusUpdate,
 } from "@/lib/table-actions";
 import type { FormEntry, StatusType } from "@/types/form-entries";
-import { UserCheck, UserX } from "lucide-react";
+import { ChevronDown, UserCheck, UserX } from "lucide-react";
 import RegistrantTableColumns from "./RegistrantTableColumns";
 
 interface DataTableProps {
@@ -58,6 +65,11 @@ const searchableColumns = [
 export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    scholarship_type: false,
+    course: false,
+    region: false,
+  });
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isUpdating, setIsUpdating] = useState<number | null>(null);
   const [isBatchUpdating, setIsBatchUpdating] = useState(false);
@@ -141,6 +153,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -150,6 +163,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     state: {
       sorting,
       columnFilters,
+      columnVisibility,
       rowSelection,
     },
   });
@@ -199,6 +213,44 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
             onChange={(e) => handleSearchChange(e.target.value)}
             className="max-w-sm"
           />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              onCloseAutoFocus={(e) => e.preventDefault()}
+            >
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {column.id === "first_name"
+                        ? "Name"
+                        : column.id === "contact_number"
+                        ? "Contact"
+                        : column.id === "is_checked_in"
+                        ? "Check-in"
+                        : column.id === "scholarship_type"
+                        ? "Scholarship Type"
+                        : column.id.replace(/_/g, " ")}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Batch actions */}
@@ -230,55 +282,91 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
           </div>
         )}
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      <div className="rounded-md border overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table className="relative">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={
+                          header.column.id === "is_checked_in" ||
+                          header.column.id === "actions"
+                            ? "sticky right-0 bg-background z-10  min-w-[100px]"
+                            : header.column.id === "first_name"
+                            ? "min-w-[150px]"
+                            : "min-w-[100px]"
+                        }
+                        style={
+                          header.column.id === "actions"
+                            ? { right: 0 }
+                            : header.column.id === "is_checked_in"
+                            ? { right: "120px" }
+                            : undefined
+                        }
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={
+                          cell.column.id === "is_checked_in" ||
+                          cell.column.id === "actions"
+                            ? "sticky right-0 bg-background z-10 min-w-[100px]"
+                            : cell.column.id === "first_name"
+                            ? "min-w-[150px]"
+                            : "min-w-[100px]"
+                        }
+                        style={
+                          cell.column.id === "actions"
+                            ? { right: 0 }
+                            : cell.column.id === "is_checked_in"
+                            ? { right: "120px" }
+                            : undefined
+                        }
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
