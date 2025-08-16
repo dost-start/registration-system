@@ -65,26 +65,45 @@ export function RegistrantDetailsDialog({
                     .join(" ")}
                 </p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Email
-                </label>
-                <p className="text-sm">{registrant.email || "Not provided"}</p>
-              </div>
+             <div>
+  <label className="text-sm font-medium text-muted-foreground">
+    Email
+  </label>
+  {registrant.email ? (
+    <a
+      href={`mailto:${registrant.email}`}
+      className="text-sm text-blue-600 hover:underline"
+    >
+      {registrant.email}
+    </a>
+  ) : (
+    <p className="text-sm">Not provided</p>
+  )}
+</div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
                   Contact Number
                 </label>
                 <p className="text-sm">{registrant.contact_number}</p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Facebook Profile
-                </label>
-                <p className="text-sm">
-                  {registrant.facebook_profile || "Not provided"}
-                </p>
-              </div>
+<div>
+  <label className="text-sm font-medium text-muted-foreground">
+    Facebook Profile
+  </label>
+  {registrant.facebook_profile ? (
+    <a
+      href={registrant.facebook_profile}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sm text-blue-600 hover:underline break-all"
+    >
+      {registrant.facebook_profile}
+    </a>
+  ) : (
+    <p className="text-sm">Not provided</p>
+  )}
+</div>
+
             </div>
           </div>
 
