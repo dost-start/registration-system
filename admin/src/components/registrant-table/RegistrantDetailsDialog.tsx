@@ -77,14 +77,15 @@ export function RegistrantDetailsDialog({
                 </label>
                 <p className="text-sm">{registrant.contact_number}</p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Facebook Profile
-                </label>
-                <p className="text-sm">
-                  {registrant.facebook_profile || "Not provided"}
-                </p>
-              </div>
+<div>
+  <label className="text-sm font-medium text-muted-foreground">
+    Facebook Profile
+  </label>
+  <p className="text-sm" style={{ wordBreak: "break-all" }}>
+    {registrant.facebook_profile || "Not provided"}
+  </p>
+</div>
+
             </div>
           </div>
 
