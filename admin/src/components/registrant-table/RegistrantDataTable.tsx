@@ -192,7 +192,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-start md:items-center space-x-2 gap-2 flex-wrap ">
           <Select value={searchColumn} onValueChange={handleSearchColumnChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Search by..." />
@@ -215,7 +215,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -295,7 +295,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
                         className={
                           header.column.id === "is_checked_in" ||
                           header.column.id === "actions"
-                            ? "sticky right-0 bg-background z-10  min-w-[100px]"
+                            ? "md:sticky md:right-0 bg-background z-10  min-w-[100px]"
                             : header.column.id === "first_name"
                             ? "min-w-[150px]"
                             : "min-w-[100px]"
@@ -333,7 +333,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
                         className={
                           cell.column.id === "is_checked_in" ||
                           cell.column.id === "actions"
-                            ? "sticky right-0 bg-background z-10 min-w-[100px]"
+                            ? "md:sticky md:right-0 bg-background z-10 min-w-[100px]"
                             : cell.column.id === "first_name"
                             ? "min-w-[150px]"
                             : "min-w-[100px]"
@@ -370,8 +370,7 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s) found.
         </div>
         <div className="space-x-2">
           <Button
