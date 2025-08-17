@@ -2,6 +2,7 @@ import { getStatusBadgeVariant, truncateText } from "@/lib/table-actions";
 import { FormEntry, StatusType } from "@/types/form-entries";
 import { ColumnDef } from "@tanstack/react-table";
 import {
+  ArrowUpDown,
   CheckCircle,
   Clock,
   Copy,
@@ -24,8 +25,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { RegistrantDetailsDialog } from "./RegistrantDetailsDialog";
 import { EditRemarksDialog } from "./EditRemarksDialog";
+import { RegistrantDetailsDialog } from "./RegistrantDetailsDialog";
 
 interface Props {
   isUpdating: number | null;
@@ -211,7 +212,17 @@ export default function RegistrantTableColumns({
   return [
     {
       accessorKey: "first_name",
-      header: "Name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       size: 150,
       minSize: 150,
       filterFn: (row, _columnId, filterValue) => {
@@ -246,7 +257,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "email",
-      header: "Email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Email
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const email = row.getValue("email") as string;
         return <div className="lowercase">{truncateText(email, 30)}</div>;
@@ -254,7 +275,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "contact_number",
-      header: "Contact",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Contact
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const contact = row.getValue("contact_number") as string;
         return <div>{contact}</div>;
@@ -262,7 +293,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "university",
-      header: "University",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            University
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const university = row.getValue("university") as string;
         return <div>{truncateText(university, 20)}</div>;
@@ -270,7 +311,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "region",
-      header: "Region",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Region
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const region = row.getValue("region") as string;
         return <div>{region}</div>;
@@ -278,7 +329,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "course",
-      header: "Course",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Course
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const course = row.getValue("course") as string;
         return <div>{truncateText(course, 20)}</div>;
@@ -286,7 +347,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "scholarship_type",
-      header: "Scholarship Type",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Scholarship Type
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const scholarshipType = row.getValue("scholarship_type") as string;
         return <div>{truncateText(scholarshipType, 15)}</div>;
@@ -294,7 +365,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Status
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const status = row.getValue("status") as StatusType;
 
@@ -309,7 +390,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "is_checked_in",
-      header: "Check-in",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Check-in
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const isCheckedIn = row.getValue("is_checked_in") as boolean;
 
@@ -324,7 +415,17 @@ export default function RegistrantTableColumns({
     },
     {
       accessorKey: "remarks",
-      header: "Remarks",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Remarks
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const remarks = row.getValue("remarks") as string | null;
         return (
