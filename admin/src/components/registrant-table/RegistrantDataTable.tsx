@@ -2,65 +2,31 @@
 
 import {
   ColumnFiltersState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  RowSelectionState,
   SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  handleBatchCheckIn,
   handleCheckInToggle,
   handleRegistrantDelete,
   handleStatusUpdate,
 } from "@/lib/table-actions";
 import type { FormEntry, StatusType } from "@/types/form-entries";
-import { ChevronDown, UserCheck, UserX } from "lucide-react";
+import { DataTableContent } from "./DataTableContent";
 import RegistrantTableColumns from "./RegistrantTableColumns";
+import { TableFilters } from "./TableFilters";
+import { TablePagination } from "./TablePagination";
 
 interface DataTableProps {
   data: FormEntry[];
   onDataChange: () => void;
 }
-
-const searchableColumns = [
-  { key: "first_name", label: "Name" },
-  { key: "email", label: "Email" },
-  { key: "contact_number", label: "Contact" },
-  { key: "university", label: "University" },
-  { key: "region", label: "Region" },
-  { key: "course", label: "Course" },
-  { key: "scholarship_type", label: "Scholarship Type" },
-] as const;
 
 export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -70,11 +36,11 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     course: false,
     region: false,
   });
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isUpdating, setIsUpdating] = useState<number | null>(null);
-  const [isBatchUpdating, setIsBatchUpdating] = useState(false);
   const [searchColumn, setSearchColumn] = useState<string>("first_name");
   const [searchValue, setSearchValue] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [checkInFilter, setCheckInFilter] = useState<string>("all");
 
   const updateRegistrantStatus = async (id: number, newStatus: StatusType) => {
     try {
@@ -98,26 +64,6 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
       console.error("Failed to toggle check-in:", error);
     } finally {
       setIsUpdating(null);
-    }
-  };
-
-  const batchCheckIn = async (isCheckedIn: boolean) => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
-    const selectedIds = selectedRows.map((row) => row.original.id);
-
-    if (selectedIds.length === 0) {
-      alert("Please select registrants to check in/out");
-      return;
-    }
-
-    try {
-      setIsBatchUpdating(true);
-      await handleBatchCheckIn(selectedIds, isCheckedIn, onDataChange);
-      setRowSelection({});
-    } catch (error) {
-      console.error("Failed to batch update check-in:", error);
-    } finally {
-      setIsBatchUpdating(false);
     }
   };
 
@@ -154,17 +100,19 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    enableRowSelection: true,
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
     state: {
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
     },
   });
 
@@ -187,210 +135,44 @@ export function RegistrantDataTable({ data, onDataChange }: DataTableProps) {
     setSearchValue("");
   };
 
-  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+    if (value === "all") {
+      table.getColumn("status")?.setFilterValue("");
+    } else {
+      table.getColumn("status")?.setFilterValue(value);
+    }
+  };
+
+  const handleCheckInFilterChange = (value: string) => {
+    setCheckInFilter(value);
+    if (value === "all") {
+      table.getColumn("is_checked_in")?.setFilterValue("");
+    } else {
+      table.getColumn("is_checked_in")?.setFilterValue(value === "checked_in");
+    }
+  };
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between py-4">
-        <div className="flex items-start md:items-center space-x-2 gap-2 flex-wrap ">
-          <Select value={searchColumn} onValueChange={handleSearchColumnChange}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Search by..." />
-            </SelectTrigger>
-            <SelectContent>
-              {searchableColumns.map((column) => (
-                <SelectItem key={column.key} value={column.key}>
-                  {column.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            placeholder={`Filter by ${searchableColumns
-              .find((c) => c.key === searchColumn)
-              ?.label.toLowerCase()}...`}
-            value={searchValue}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="max-w-sm"
-          />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Columns <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              onCloseAutoFocus={(e) => e.preventDefault()}
-            >
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      {column.id === "first_name"
-                        ? "Name"
-                        : column.id === "contact_number"
-                        ? "Contact"
-                        : column.id === "is_checked_in"
-                        ? "Check-in"
-                        : column.id === "scholarship_type"
-                        ? "Scholarship Type"
-                        : column.id.replace(/_/g, " ")}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+    <div className="w-full space-y-6">
+      {/* Filters */}
+      <TableFilters
+        table={table}
+        searchColumn={searchColumn}
+        searchValue={searchValue}
+        statusFilter={statusFilter}
+        checkInFilter={checkInFilter}
+        onSearchColumnChange={handleSearchColumnChange}
+        onSearchChange={handleSearchChange}
+        onStatusFilterChange={handleStatusFilterChange}
+        onCheckInFilterChange={handleCheckInFilterChange}
+      />
 
-        {/* Batch actions */}
-        {selectedCount > 0 && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">
-              {selectedCount} selected
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => batchCheckIn(true)}
-              disabled={isBatchUpdating}
-              className="h-8"
-            >
-              <UserCheck className="w-4 h-4 mr-1" />
-              Check In All
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => batchCheckIn(false)}
-              disabled={isBatchUpdating}
-              className="h-8"
-            >
-              <UserX className="w-4 h-4 mr-1" />
-              Check Out All
-            </Button>
-          </div>
-        )}
-      </div>
-      <div className="rounded-md border overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table className="relative">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className={
-                          header.column.id === "is_checked_in" ||
-                          header.column.id === "actions"
-                            ? "md:sticky md:right-0 bg-background z-10  min-w-[100px]"
-                            : header.column.id === "first_name"
-                            ? "min-w-[150px]"
-                            : "min-w-[100px]"
-                        }
-                        style={
-                          header.column.id === "actions"
-                            ? { right: 0 }
-                            : header.column.id === "is_checked_in"
-                            ? { right: "120px" }
-                            : undefined
-                        }
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={
-                          cell.column.id === "is_checked_in" ||
-                          cell.column.id === "actions"
-                            ? "md:sticky md:right-0 bg-background z-10 min-w-[100px]"
-                            : cell.column.id === "first_name"
-                            ? "min-w-[150px]"
-                            : "min-w-[100px]"
-                        }
-                        style={
-                          cell.column.id === "actions"
-                            ? { right: 0 }
-                            : cell.column.id === "is_checked_in"
-                            ? { right: "120px" }
-                            : undefined
-                        }
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} row(s) found.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      {/* Table Content */}
+      <DataTableContent table={table} columns={columns} />
+
+      {/* Pagination */}
+      <TablePagination table={table} />
     </div>
   );
 }
