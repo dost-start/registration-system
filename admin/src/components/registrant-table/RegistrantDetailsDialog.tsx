@@ -69,6 +69,8 @@ export function RegistrantDetailsDialog({
   <label className="text-sm font-medium text-muted-foreground">
     Email
   </label>
+               <div>
+               
   {registrant.email ? (
     <a
       href={`mailto:${registrant.email}`}
@@ -79,6 +81,7 @@ export function RegistrantDetailsDialog({
   ) : (
     <p className="text-sm">Not provided</p>
   )}
+                 </div>
 </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
@@ -90,6 +93,8 @@ export function RegistrantDetailsDialog({
   <label className="text-sm font-medium text-muted-foreground">
     Facebook Profile
   </label>
+  <div>
+  
   {registrant.facebook_profile ? (
     <a
       href={registrant.facebook_profile}
@@ -102,6 +107,7 @@ export function RegistrantDetailsDialog({
   ) : (
     <p className="text-sm">Not provided</p>
   )}
+    </div>
 </div>
 
             </div>
