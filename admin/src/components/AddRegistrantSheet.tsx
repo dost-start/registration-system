@@ -25,7 +25,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 import { FormEntryInsert, REGIONS_ARRAY } from "@/types/form-entries";
-import { Constants } from "@/types/supabase";
 import {
   Sheet,
   SheetContent,
@@ -37,6 +36,7 @@ import {
 } from "./ui/sheet";
 import { addRegistrantSchema } from "@/schemas/addRegistrantSchema";
 import { YEAR_AWARDED_OPTIONS, YEAR_LEVELS } from "@/types/types";
+import { Constants } from "@/types/supabase";
 
 type AddRegistrantFormData = z.infer<typeof addRegistrantSchema>;
 
