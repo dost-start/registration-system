@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -22,10 +22,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
+          extensions?: Json
           operationName?: string
           query?: string
           variables?: Json
-          extensions?: Json
         }
         Returns: Json
       }
@@ -105,6 +105,24 @@ export type Database = {
         }
         Relationships: []
       }
+      options: {
+        Row: {
+          created_at: string
+          id: Database["public"]["Enums"]["option_keys"]
+          value: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id: Database["public"]["Enums"]["option_keys"]
+          value?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: Database["public"]["Enums"]["option_keys"]
+          value?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -113,6 +131,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      option_keys: "is_event_closed"
       philippine_region:
         | "Region I"
         | "Region II"
@@ -264,6 +283,7 @@ export const Constants = {
   },
   public: {
     Enums: {
+      option_keys: ["is_event_closed"],
       philippine_region: [
         "Region I",
         "Region II",
