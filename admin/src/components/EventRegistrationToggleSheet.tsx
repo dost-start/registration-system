@@ -78,7 +78,7 @@ export function EventRegistrationToggleSheet({
           <span className="hidden md:inline">Event Settings</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-4">
+      <SheetContent className="p-4 w-full">
         <SheetHeader>
           <SheetTitle>Event Registration Settings</SheetTitle>
           <SheetDescription>
