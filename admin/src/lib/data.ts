@@ -147,3 +147,40 @@ export async function deleteRegistrant(id: number): Promise<void> {
     throw new Error(`Failed to delete registrant: ${error.message}`);
   }
 }
+
+/**
+ * Get event registration status (open/closed)
+ */
+export async function getEventRegistrationStatus(): Promise<boolean> {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("options")
+    .select("value")
+    .eq("id", "is_event_closed")
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to get event status: ${error.message}`);
+  }
+
+  return data?.value ?? false;
+}
+
+/**
+ * Toggle event registration status (open/closed)
+ */
+export async function toggleEventRegistrationStatus(
+  isClosed: boolean
+): Promise<void> {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("options")
+    .update({ id: "is_event_closed", value: isClosed })
+    .eq("id", "is_event_closed");
+
+  if (error) {
+    throw new Error(`Failed to update event status: ${error.message}`);
+  }
+}

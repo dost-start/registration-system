@@ -8,9 +8,20 @@ import {
 import { Database, TablesInsert } from "@/types/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getEventRegistrationStatus } from "./event-status";
 
 export async function submitRegistration(data: RegistrationFormData) {
   try {
+    // Check if registration is closed before processing
+    const isRegistrationClosed = await getEventRegistrationStatus();
+    if (isRegistrationClosed) {
+      return {
+        success: false,
+        message: "Registration is currently closed for this event.",
+        errors: null,
+      };
+    }
+
     // Log the received data (remove in production)
     console.log("Registration data received:", data);
     const validationResult = registrationSchema.safeParse(data);

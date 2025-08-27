@@ -3,6 +3,13 @@ import Navbar from "@/components/Navbar";
 import HeroBanner from "@/components/HeroBanner";
 import EventDetails from "@/components/EventDetails";
 import RegistrationForm from "@/components/registration-form/RegistrationForm";
+import RegistrationClosed from "@/components/RegistrationClosed";
+import Footer from "@/components/Footer";
+import { getEventRegistrationStatus } from "@/app/actions/event-status";
+
+// Disable caching to ensure real-time status updates
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "National Technovation Summit",
@@ -22,9 +29,11 @@ export const metadata: Metadata = {
     ],
   },
 };
-import Footer from "@/components/Footer";
 
-export default function Home() {
+export default async function Home() {
+  // Check if registration is closed (no caching to ensure real-time status)
+  const isRegistrationClosed = await getEventRegistrationStatus();
+
   return (
     <div className="relative">
       {/* Navbar */}
@@ -35,8 +44,8 @@ export default function Home() {
       {/* Event Details Section */}
       <EventDetails />
 
-      {/* Registration Form Section */}
-      <RegistrationForm />
+      {/* Registration Form Section - Conditional */}
+      {isRegistrationClosed ? <RegistrationClosed /> : <RegistrationForm />}
 
       {/* Footer */}
       <Footer />
