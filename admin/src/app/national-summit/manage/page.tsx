@@ -12,6 +12,8 @@ import { fetchAllRegistrants } from "@/lib/data";
 import { exportRegistrantsListToCSV } from "@/lib/export";
 import type { FormEntry, RegistrantStats } from "@/types/form-entries";
 import { AddRegistrantSheet } from "@/components/AddRegistrantSheet";
+import { EventRegistrationToggleSheet } from "@/components/EventRegistrationToggleSheet";
+import { RegistrationStatusBadge } from "@/components/RegistrationStatusBadge";
 
 export default function EventManagement() {
   const [registrants, setRegistrants] = useState<FormEntry[]>([]);
@@ -24,6 +26,7 @@ export default function EventManagement() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusKey, setStatusKey] = useState(0); // Key to force re-render of status badge
 
   const fetchData = async () => {
     try {
@@ -91,6 +94,12 @@ export default function EventManagement() {
     }
   };
 
+  // Handle status change from EventRegistrationToggleSheet
+  const handleStatusChange = () => {
+    setStatusKey((prev) => prev + 1); // Force re-render of status badge
+    refreshData(); // Also refresh the data
+  };
+
   const handleExportCSV = () => {
     exportRegistrantsListToCSV(registrants);
   };
@@ -150,7 +159,10 @@ export default function EventManagement() {
         {/* Event Info Card */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>National Technovation Summit 2025</CardTitle>
+            <CardTitle className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+              <span>National Technovation Summit 2025</span>
+              <RegistrationStatusBadge key={statusKey} />
+            </CardTitle>
           </CardHeader>
         </Card>
 
@@ -167,7 +179,12 @@ export default function EventManagement() {
                 <Users className="w-5 h-5" />
                 Registrants Management
               </div>
-              <AddRegistrantSheet onRegistrantAdded={refreshData} />
+              <div className="flex items-center gap-2">
+                <EventRegistrationToggleSheet
+                  onStatusChange={handleStatusChange}
+                />
+                <AddRegistrantSheet onRegistrantAdded={refreshData} />
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
